@@ -31,6 +31,15 @@ abstract class ListCategoryDialog {
           actions: [
             TextButton(
               onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Нет',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
                 await model.deleteCategory(id);
 
                 Navigator.pop(context);
@@ -38,15 +47,6 @@ abstract class ListCategoryDialog {
               child: const Text(
                 'Да',
                 style: TextStyle(fontSize: 20, color: Colors.red),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Нет',
-                style: TextStyle(fontSize: 20),
               ),
             ),
           ],

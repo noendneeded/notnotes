@@ -135,6 +135,8 @@ class ListViewModel extends ChangeNotifier {
     final category = CategoryEntity(
         id: Uuid().v4(), name: categoryController.value.text.trim());
 
+    categoryController.text = '';
+
     categoryRepository.createOrUpdateCategory(category);
 
     refresh();

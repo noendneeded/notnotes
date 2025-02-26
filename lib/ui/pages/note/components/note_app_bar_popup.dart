@@ -152,20 +152,20 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        model.deleteNote();
                       },
                       child: const Text(
-                        'Да',
-                        style: TextStyle(fontSize: 20, color: Colors.red),
+                        'Нет',
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
+                        model.deleteNote();
                       },
                       child: const Text(
-                        'Нет',
-                        style: TextStyle(fontSize: 20),
+                        'Да',
+                        style: TextStyle(fontSize: 20, color: Colors.red),
                       ),
                     ),
                   ],
