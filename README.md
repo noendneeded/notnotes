@@ -1,3 +1,3 @@
 # notnotes
-NotNotes - Not a Simple Notes.
-Developed by noendneeded using Flutter.
+
+A new Flutter project.
