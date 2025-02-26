@@ -64,12 +64,19 @@ class NoteBodyWidget extends StatelessWidget {
 
                     const Spacer(),
 
-                    Text(
-                      model.note.categoryId,
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
+                    !model.isLoading
+                        ? Text(
+                            model.note.categoryId == 'all'
+                                ? ''
+                                : model.categories
+                                    .singleWhere((category) =>
+                                        category.id == model.note.categoryId)
+                                    .name,
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          )
+                        : Text(''),
                   ],
                 ),
               ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:notnotes/domain/di/injection.dart';
+import 'package:notnotes/domain/entities/categories/category_entity.dart';
 import 'package:notnotes/domain/entities/note/note_entity.dart';
+import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:uuid/uuid.dart';
@@ -10,16 +11,26 @@ import 'package:uuid/uuid.dart';
 class NoteViewModel extends ChangeNotifier {
   final BuildContext context;
 
-  final INoteRepository repository = getIt<INoteRepository>();
+  final INoteRepository noteRepository;
+  final ICategoryRepository categoryRepository;
 
   late NoteEntity _note;
+
+  late List<CategoryEntity> categories;
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
 
   late bool needToUpdate;
 
-  NoteViewModel({required NoteEntity? note, required this.context}) {
+  bool isLoading = false;
+
+  NoteViewModel({
+    required this.context,
+    required NoteEntity? note,
+    required this.noteRepository,
+    required this.categoryRepository,
+  }) {
     if (note != null) {
       _note = note;
 
@@ -41,9 +52,22 @@ class NoteViewModel extends ChangeNotifier {
 
     titleController.text = _note.title;
     contentController.text = _note.content;
+
+    _asyncInit(note);
   }
 
   NoteEntity get note => _note;
+
+  Future<void> _asyncInit(NoteEntity? note) async {
+    isLoading = true;
+    notifyListeners();
+
+    /// Инициализация категорий
+    categories = await categoryRepository.getCategoryList();
+
+    isLoading = false;
+    notifyListeners();
+  }
 
   /// Создание/обновление заметки
   void createOrUpdateNote() async {
@@ -60,7 +84,7 @@ class NoteViewModel extends ChangeNotifier {
         ? _note.updated = DateTime.now()
         : _note.updated = _note.created;
 
-    await repository.createOrUpdateNote(_note);
+    await noteRepository.createOrUpdateNote(_note);
 
     context.pop(true);
   }
@@ -68,7 +92,7 @@ class NoteViewModel extends ChangeNotifier {
   /// Удаление заметки
   void deleteNote() async {
     if (needToUpdate) {
-      await repository.deleteNote(_note.id);
+      await noteRepository.deleteNote(_note.id);
     }
 
     openListPage(context);

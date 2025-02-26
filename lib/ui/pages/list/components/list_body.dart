@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:notnotes/data/local/predefined_categories.dart';
+import 'package:notnotes/ui/pages/list/components/list_category_dialog.dart';
 import 'package:notnotes/ui/pages/list/components/list_note_tile.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
 import 'package:notnotes/ui/widgets/default_card/default_card.dart';
+import 'package:notnotes/ui/widgets/default_card/default_card_add.dart';
 import 'package:notnotes/ui/widgets/default_loading/default_loading.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,7 @@ class ListBodyWidget extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               physics: AlwaysScrollableScrollPhysics(),
 
-              itemCount: model.categories.length,
+              itemCount: model.categories.length + 1,
 
               separatorBuilder: (context, index) => const Gap(8),
 
@@ -40,14 +41,25 @@ class ListBodyWidget extends StatelessWidget {
                 ///
                 padding: EdgeInsets.only(
                   left: index == 0 ? 16 : 0,
-                  right: index == kPredefinedCategories.length - 1 ? 16 : 0,
+                  right: index == model.categories.length ? 16 : 0,
                 ),
 
-                child: DefaultCardWidget(
-                  title: kPredefinedCategories[index].name,
-                  onTap: () => model.selectCategory(index),
-                  selected: model.categorySelected == index,
-                ),
+                child: index != model.categories.length
+                    ? DefaultCardWidget(
+                        title: model.categories[index].name,
+                        selected: model.categorySelected == index,
+                        onTap: () => model.selectCategory(index),
+                        onLongPress: index != 0 && index != 1
+                            ? () => ListCategoryDialog.deleteCategory(
+                                  context: context,
+                                  id: model.categories[index].id,
+                                )
+                            : null,
+                      )
+                    : DefaultCardAddWidget(
+                        onTap: () =>
+                            ListCategoryDialog.addCategory(context: context),
+                      ),
               ),
             ),
           ),

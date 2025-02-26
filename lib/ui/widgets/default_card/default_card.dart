@@ -5,11 +5,13 @@ class DefaultCardWidget extends StatelessWidget {
     super.key,
     required this.title,
     this.onTap,
+    this.onLongPress,
     this.selected = false,
   });
 
   final String title;
   final Function()? onTap;
+  final Function()? onLongPress;
 
   final bool selected;
 
@@ -17,6 +19,7 @@ class DefaultCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: AnimatedContainer(
         ///
         // height: 32,

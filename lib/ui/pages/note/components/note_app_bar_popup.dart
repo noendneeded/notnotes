@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:notnotes/data/local/predefined_categories.dart';
 import 'package:notnotes/ui/pages/note/note_vm.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_card/default_card.dart';
@@ -62,7 +61,7 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           physics: AlwaysScrollableScrollPhysics(),
 
-                          itemCount: kPredefinedCategories.length,
+                          itemCount: model.categories.length,
 
                           separatorBuilder: (context, index) => const Gap(8),
 
@@ -70,18 +69,17 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                             ///
                             padding: EdgeInsets.only(
                               left: index == 1 ? 8 : 0,
-                              right: index == kPredefinedCategories.length - 1
-                                  ? 16
-                                  : 0,
+                              right:
+                                  index == model.categories.length - 1 ? 16 : 0,
                             ),
 
                             child: index == 0
                                 ? null
                                 : DefaultCardWidget(
-                                    title: kPredefinedCategories[index].name,
+                                    title: model.categories[index].name,
                                     onTap: () => Navigator.pop(context, index),
                                     selected: model.note.categoryId ==
-                                        kPredefinedCategories[index].id,
+                                        model.categories[index].id,
                                   ),
                           ),
                         ),
@@ -129,10 +127,9 @@ class NoteAppBarPopupWidget extends StatelessWidget {
             ).then((selectedIndex) {
               if (selectedIndex != null) {
                 DefaultToast.show(
-                    'Выбрана категория: ${kPredefinedCategories[selectedIndex].name}');
+                    'Выбрана категория: ${model.categories[selectedIndex].name}');
 
-                model.changeCategory(
-                    id: kPredefinedCategories[selectedIndex].id);
+                model.changeCategory(id: model.categories[selectedIndex].id);
               }
             });
             break;
@@ -145,8 +142,10 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide.none,
                   ),
+                  titlePadding:
+                      const EdgeInsets.only(top: 24, left: 24, bottom: 12),
                   actionsPadding:
-                      EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      EdgeInsets.only(bottom: 12, left: 12, right: 12),
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   title: Text('Вы уверены?'),
                   actions: [
@@ -177,82 +176,84 @@ class NoteAppBarPopupWidget extends StatelessWidget {
         }
       },
 
-      itemBuilder: <PopupMenuEntry<String>>[
-        ///
-        PopupMenuItem<String>(
-          value: 'create_notification',
-          child: Row(
-            children: [
+      itemBuilder: model.isLoading
+          ? []
+          : <PopupMenuEntry<String>>[
               ///
-              Icon(
-                Icons.alarm_rounded,
-                size: 20,
+              PopupMenuItem<String>(
+                value: 'create_notification',
+                child: Row(
+                  children: [
+                    ///
+                    Icon(
+                      Icons.alarm_rounded,
+                      size: 20,
+                    ),
+
+                    const Gap(8),
+
+                    Text(
+                      'Создать напоминание',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
-              const Gap(8),
+              PopupMenuDivider(),
 
-              Text(
-                'Создать напоминание',
-                style: TextStyle(
-                  fontSize: 16,
+              PopupMenuItem<String>(
+                value: 'add_to_category',
+                child: Row(
+                  children: [
+                    ///
+                    Icon(
+                      Icons.label_outline_rounded,
+                      size: 20,
+                    ),
+
+                    const Gap(8),
+
+                    Text(
+                      model.note.categoryId == 'all'
+                          ? 'Добавить категорию'
+                          : 'Изменить категорию',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              PopupMenuDivider(),
+
+              PopupMenuItem<String>(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    ///
+                    Icon(
+                      Icons.delete_rounded,
+                      size: 20,
+                      color: Colors.red.shade700,
+                    ),
+
+                    const Gap(8),
+
+                    Text(
+                      'Удалить заметку',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.red.shade700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-        ),
-
-        PopupMenuDivider(),
-
-        PopupMenuItem<String>(
-          value: 'add_to_category',
-          child: Row(
-            children: [
-              ///
-              Icon(
-                Icons.label_outline_rounded,
-                size: 20,
-              ),
-
-              const Gap(8),
-
-              Text(
-                model.note.categoryId == 'all'
-                    ? 'Добавить категорию'
-                    : 'Изменить категорию',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        PopupMenuDivider(),
-
-        PopupMenuItem<String>(
-          value: 'delete',
-          child: Row(
-            children: [
-              ///
-              Icon(
-                Icons.delete_rounded,
-                size: 20,
-                color: Colors.red.shade700,
-              ),
-
-              const Gap(8),
-
-              Text(
-                'Удалить заметку',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.red.shade700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

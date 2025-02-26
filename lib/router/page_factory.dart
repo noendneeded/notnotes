@@ -42,7 +42,12 @@ class PageFactory {
     final note = state.extra as NoteEntity?;
 
     return ChangeNotifierProvider(
-      create: (_) => NoteViewModel(context: context, note: note),
+      create: (_) => NoteViewModel(
+        context: context,
+        noteRepository: getIt<INoteRepository>(),
+        categoryRepository: getIt<ICategoryRepository>(),
+        note: note,
+      ),
       child: const NotePage(),
     );
   }

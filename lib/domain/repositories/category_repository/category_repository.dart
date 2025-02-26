@@ -28,11 +28,16 @@ class CategoryRepository implements ICategoryRepository {
 
   @override
   Future<List<CategoryEntity>> getCategoryList() async {
-    return kPredefinedCategories;
-    // return categoryBox.values.map((jsonString) {
-    //   final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    //   return CategoryEntity.fromJson(jsonMap);
-    // }).toList();
+    final result = <CategoryEntity>[];
+
+    result.addAll(kPredefinedCategories);
+
+    result.addAll(categoryBox.values.map((jsonString) {
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      return CategoryEntity.fromJson(jsonMap);
+    }).toList());
+
+    return result;
   }
 
   @override

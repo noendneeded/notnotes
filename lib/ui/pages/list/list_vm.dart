@@ -5,6 +5,8 @@ import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 import 'package:notnotes/router/app_routes.dart';
+import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
+import 'package:uuid/uuid.dart';
 
 class ListViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -19,6 +21,7 @@ class ListViewModel extends ChangeNotifier {
   int categorySelected = 0;
 
   final TextEditingController listController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
 
   bool _isLoading = true;
 
@@ -74,6 +77,11 @@ class ListViewModel extends ChangeNotifier {
 
     notesFiltered.addAll(_notes);
 
+    /// Обновление категорий
+    categories.clear();
+    categories = await categoryRepository.getCategoryList();
+    categorySelected = 0;
+
     filter();
 
     _isLoading = false;
@@ -120,6 +128,27 @@ class ListViewModel extends ChangeNotifier {
     notifyListeners();
 
     filter();
+  }
+
+  /// Создание категории
+  createCategory() async {
+    final category = CategoryEntity(
+        id: Uuid().v4(), name: categoryController.value.text.trim());
+
+    categoryRepository.createOrUpdateCategory(category);
+
+    refresh();
+  }
+
+  deleteCategory(String id) async {
+    if (_notes.where((note) => note.categoryId == id).isNotEmpty) {
+      DefaultToast.show('Нельзя удалить категорию с заметками');
+      return;
+    }
+
+    await categoryRepository.deleteCategory(id);
+
+    await refresh();
   }
 
   /// Удаление выделенных заметок
