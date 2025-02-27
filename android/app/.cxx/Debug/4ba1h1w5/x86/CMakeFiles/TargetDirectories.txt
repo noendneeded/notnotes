@@ -1,0 +1,2 @@
+C:/Code/Local/GitHub/notnotes/android/app/.cxx/Debug/4ba1h1w5/x86/CMakeFiles/edit_cache.dir
+C:/Code/Local/GitHub/notnotes/android/app/.cxx/Debug/4ba1h1w5/x86/CMakeFiles/rebuild_cache.dir
