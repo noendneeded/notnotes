@@ -47,84 +47,84 @@ class ListBodyWidget extends StatelessWidget {
                 child: index != model.categories.length
                     ? Builder(
                         builder: (context) {
-                          final GlobalKey cardKey = GlobalKey();
+                          final GlobalObjectKey cardKey =
+                              GlobalObjectKey(model.categories[index].id);
 
                           return DefaultCardWidget(
                             ///
                             key: cardKey,
+                            selected: model.categorySelected == index,
 
                             title: model.categories[index].name,
-                            selected: model.categorySelected == index,
 
                             onTap: () => model.noteStates.containsValue(true)
                                 ? null
                                 : model.selectCategory(index),
-                            onLongPressStart: index == 0 || index == 1
-                                ? null
-                                : (details) async {
-                                    final RenderBox cardBox = cardKey
-                                        .currentContext!
-                                        .findRenderObject() as RenderBox;
-                                    final Offset cardPosition =
-                                        cardBox.localToGlobal(Offset.zero);
-                                    final Size cardSize = cardBox.size;
-                                    final RenderBox overlay =
-                                        Overlay.of(context)
-                                            .context
-                                            .findRenderObject() as RenderBox;
 
-                                    final RelativeRect position =
-                                        RelativeRect.fromRect(
-                                      Rect.fromLTWH(
-                                        cardPosition.dx,
-                                        cardPosition.dy + cardSize.height,
-                                        cardSize.width,
-                                        cardSize.height,
-                                      ),
-                                      Offset.zero & overlay.size,
-                                    );
+                            onLongPressStart: (details) async {
+                              final RenderBox cardBox = cardKey.currentContext!
+                                  .findRenderObject() as RenderBox;
 
-                                    final selected = await showMenu<String>(
-                                      ///
-                                      context: context,
-                                      position: position,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      elevation: 2,
+                              final Offset cardPosition =
+                                  cardBox.localToGlobal(Offset.zero);
 
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
+                              final Size cardSize = cardBox.size;
 
-                                      items: [
-                                        PopupMenuItem<String>(
-                                          value: 'delete',
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.delete_rounded,
-                                                size: 18,
-                                                color: Colors.red.shade700,
-                                              ),
-                                              const Gap(8),
-                                              Text(
-                                                'Удалить категорию',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.red.shade700,
-                                                ),
-                                              ),
-                                            ],
+                              final RenderBox overlay = Overlay.of(context)
+                                  .context
+                                  .findRenderObject() as RenderBox;
+
+                              final RelativeRect position =
+                                  RelativeRect.fromRect(
+                                Rect.fromLTWH(
+                                  cardPosition.dx,
+                                  cardPosition.dy + cardSize.height,
+                                  cardSize.width,
+                                  cardSize.height,
+                                ),
+                                Offset.zero & overlay.size,
+                              );
+
+                              final selected = await showMenu<String>(
+                                ///
+                                context: context,
+                                position: position,
+
+                                elevation: 2,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+
+                                items: [
+                                  PopupMenuItem<String>(
+                                    value: 'delete',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.delete_rounded,
+                                          size: 18,
+                                          color: Colors.red.shade700,
+                                        ),
+                                        const Gap(8),
+                                        Text(
+                                          'Удалить категорию',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.red.shade700,
                                           ),
                                         ),
                                       ],
-                                    );
-
-                                    if (selected == 'delete') {
-                                      await model.deleteCategory(
-                                          model.categories[index].id);
-                                    }
-                                  },
+                                    ),
+                                  ),
+                                ],
+                              );
+                              if (selected == 'delete') {
+                                await model
+                                    .deleteCategory(model.categories[index].id);
+                              }
+                            },
                           );
                         },
                       )

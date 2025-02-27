@@ -43,10 +43,11 @@ class DefaultCardWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Center(
-              child: Text(
-            title,
-            style: const TextStyle(fontSize: 14),
-          )),
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
         ),
       ),
     );
