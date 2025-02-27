@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
+import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_container.dart/focusable_container.dart';
 import 'package:notnotes/ui/widgets/default_text_form/default_text_form.dart';
 import 'package:provider/provider.dart';
@@ -104,11 +105,16 @@ abstract class ListCategoryDialog {
               },
               child: const Text(
                 'Отмена',
-                style: TextStyle(fontSize: 20, color: Colors.red),
+                style: TextStyle(fontSize: 20),
               ),
             ),
             TextButton(
               onPressed: () async {
+                if (model.categoryController.value.text.isEmpty) {
+                  DefaultToast.show('Название не может быть пустым');
+                  return;
+                }
+
                 await model.createCategory();
 
                 Navigator.pop(context);

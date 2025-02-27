@@ -7,6 +7,7 @@ class CategoryEntity {
   CategoryEntity({
     required this.id,
     required this.name,
+    required this.created,
     this.description = '',
   });
 
@@ -17,6 +18,8 @@ class CategoryEntity {
 
   @JsonKey(defaultValue: '')
   String description;
+
+  final DateTime created;
 
   factory CategoryEntity.fromJson(Map<String, dynamic> json) =>
       _$CategoryEntityFromJson(json);

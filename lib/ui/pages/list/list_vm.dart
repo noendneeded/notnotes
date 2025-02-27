@@ -59,7 +59,7 @@ class ListViewModel extends ChangeNotifier {
   }
 
   /// Обновление списка заметок
-  refresh() async {
+  refresh({int categoryIndex = 0}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -80,7 +80,7 @@ class ListViewModel extends ChangeNotifier {
     /// Обновление категорий
     categories.clear();
     categories = await categoryRepository.getCategoryList();
-    categorySelected = 0;
+    categorySelected = categoryIndex;
 
     filter();
 
@@ -90,6 +90,10 @@ class ListViewModel extends ChangeNotifier {
 
   /// Фильтрация
   filter() {
+    _isLoading = true;
+    notifyListeners();
+
+    /// Категория
     if (categorySelected == 0) {
       notesFiltered.clear();
       notesFiltered.addAll(_notes);
@@ -101,24 +105,61 @@ class ListViewModel extends ChangeNotifier {
           _notes.where((note) => note.categoryId == categoryid).toList();
     }
 
+    /// Поиск
+    final query = listController.value.text.trim().toLowerCase();
+
+    if (query.isNotEmpty) {
+      notesFiltered = notesFiltered
+          .where((note) =>
+              note.title.toLowerCase().contains(query) ||
+              note.content.toLowerCase().contains(query))
+          .toList();
+    }
+
+    noteStates.clear();
+    for (int i = 0; i < notesFiltered.length; i++) {
+      noteStates[i] = false;
+    }
+
+    _isLoading = false;
     notifyListeners();
   }
 
-  /// Поиск в списке заметок
-  search() {
-    final query = listController.value.text.trim().toLowerCase();
+  /// Получение общей категории
+  String? getCommonSelectedCategoryId() {
+    final selectedIndices = noteStates.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
 
-    if (query.isEmpty) {
-      filter();
-      return;
-    } else {
-      notesFiltered = notesFiltered.where((note) {
-        return note.title.toLowerCase().contains(query) ||
-            note.content.toLowerCase().contains(query);
-      }).toList();
+    if (selectedIndices.isEmpty) {
+      return null;
     }
 
-    notifyListeners();
+    final firstCategoryId = notesFiltered[selectedIndices.first].categoryId;
+
+    final allSame = selectedIndices.every(
+      (index) => notesFiltered[index].categoryId == firstCategoryId,
+    );
+
+    return allSame ? firstCategoryId : null;
+  }
+
+  /// Изменение категории у выделенных заметок
+  changeNotesCategory(String id) async {
+    final selectedIndices = noteStates.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    for (var index in selectedIndices) {
+      final updatedNote = _notes[index];
+      updatedNote.categoryId = id;
+
+      noteRepository.createOrUpdateNote(updatedNote);
+    }
+
+    await refresh();
   }
 
   /// Выбор категории
@@ -133,15 +174,19 @@ class ListViewModel extends ChangeNotifier {
   /// Создание категории
   createCategory() async {
     final category = CategoryEntity(
-        id: Uuid().v4(), name: categoryController.value.text.trim());
+      id: Uuid().v4(),
+      name: categoryController.value.text.trim(),
+      created: DateTime.now(),
+    );
 
     categoryController.text = '';
 
     categoryRepository.createOrUpdateCategory(category);
 
-    refresh();
+    refresh(categoryIndex: categories.length);
   }
 
+  /// Удаление категории
   deleteCategory(String id) async {
     if (_notes.where((note) => note.categoryId == id).isNotEmpty) {
       DefaultToast.show('Нельзя удалить категорию с заметками');
@@ -180,6 +225,24 @@ class ListViewModel extends ChangeNotifier {
   openNotePage() async {
     final result = await context
         .push('${GoRouterState.of(context).fullPath!}/${AppRoutes.note}');
+
+    if (result == true) {
+      await refresh();
+    }
+  }
+
+  openNotePageWithCategory() async {
+    final result = await context.push(
+      '${GoRouterState.of(context).fullPath!}/${AppRoutes.note}',
+      extra: NoteEntity(
+        id: Uuid().v4(),
+        title: '',
+        content: '',
+        categoryId: categories[categorySelected].id,
+        created: DateTime.now(),
+        updated: DateTime.now(),
+      ),
+    );
 
     if (result == true) {
       await refresh();

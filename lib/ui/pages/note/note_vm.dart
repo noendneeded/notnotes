@@ -15,7 +15,6 @@ class NoteViewModel extends ChangeNotifier {
   final ICategoryRepository categoryRepository;
 
   late NoteEntity _note;
-
   late List<CategoryEntity> categories;
 
   final TextEditingController titleController = TextEditingController();
@@ -35,6 +34,19 @@ class NoteViewModel extends ChangeNotifier {
       _note = note;
 
       needToUpdate = true;
+    } else if (note?.id == 'new') {
+      final now = DateTime.now();
+
+      _note = NoteEntity(
+        id: Uuid().v4(),
+        title: '',
+        content: '',
+        categoryId: note!.categoryId,
+        created: now,
+        updated: now,
+      );
+
+      needToUpdate = false;
     } else {
       final now = DateTime.now();
 
@@ -64,6 +76,8 @@ class NoteViewModel extends ChangeNotifier {
 
     /// Инициализация категорий
     categories = await categoryRepository.getCategoryList();
+
+    changeCategory(id: note?.categoryId);
 
     isLoading = false;
     notifyListeners();

@@ -43,9 +43,7 @@ class ListPage extends StatelessWidget {
 
       body: ListBodyWidget(),
 
-      floatingActionButton: model.noteStates.containsValue(true)
-          ? null
-          : ListFloatingActionButtonWidget(),
+      floatingActionButton: ListFloatingActionButtonWidget(),
     );
   }
 }

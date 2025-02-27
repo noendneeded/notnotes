@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
+import 'package:notnotes/ui/widgets/default_card/default_card.dart';
 import 'package:notnotes/ui/widgets/default_popup/default_popup.dart';
 import 'package:provider/provider.dart';
 
@@ -25,16 +26,6 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
 
           DefaultPopupWidget(
             ///
-            onSelected: (p0) {
-              switch (p0) {
-                case 'delete':
-                  model.deleteNotes();
-                  break;
-                case 'add_to_category':
-                  break;
-              }
-            },
-
             itemBuilder: <PopupMenuEntry<String>>[
               ///
               PopupMenuItem<String>(
@@ -90,7 +81,73 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                 ),
               ),
             ],
-          )
+
+            onSelected: (p0) {
+              switch (p0) {
+                case 'delete':
+                  model.deleteNotes();
+                  break;
+                case 'add_to_category':
+                  showDialog<int>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        ///
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+
+                        elevation: 0,
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide.none,
+                        ),
+
+                        titlePadding: const EdgeInsets.only(top: 24, left: 24),
+                        contentPadding: const EdgeInsets.only(
+                            top: 12, bottom: 24, left: 16, right: 16),
+
+                        title: const Text('Выберите категорию'),
+
+                        content: SizedBox(
+                          ///
+                          width: 500,
+                          height: 40,
+
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: ListView.separated(
+                              ///
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              physics: const AlwaysScrollableScrollPhysics(),
+
+                              itemCount: model.categories.length,
+
+                              separatorBuilder: (context, index) =>
+                                  const Gap(8),
+
+                              itemBuilder: (context, index) =>
+                                  DefaultCardWidget(
+                                title: model.categories[index].name,
+                                onTap: () {
+                                  model.changeNotesCategory(
+                                      model.categories[index].id);
+                                  Navigator.pop(context, index);
+                                },
+                                selected: model.categories[index].id ==
+                                    model.getCommonSelectedCategoryId(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                  break;
+              }
+            },
+          ),
         ],
       ),
     );

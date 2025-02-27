@@ -15,167 +15,6 @@ class NoteAppBarPopupWidget extends StatelessWidget {
 
     return DefaultPopupWidget(
       ///
-      onSelected: (p0) {
-        switch (p0) {
-          case 'create_notification':
-            DefaultToast.show('Coming soon...');
-            break;
-          case 'add_to_category':
-            showModalBottomSheet<int>(
-              context: context,
-              builder: (BuildContext context) {
-                return Container(
-                  ///
-                  height: 180,
-
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16),
-                    ),
-                  ),
-
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ///
-
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16, top: 16),
-                        child: Text(
-                          'Выберите категорию: ',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-
-                      const Gap(8),
-
-                      SizedBox(
-                        ///
-                        height: 40,
-                        child: ListView.separated(
-                          ///
-                          scrollDirection: Axis.horizontal,
-                          physics: AlwaysScrollableScrollPhysics(),
-
-                          itemCount: model.categories.length,
-
-                          separatorBuilder: (context, index) => const Gap(8),
-
-                          itemBuilder: (context, index) => Padding(
-                            ///
-                            padding: EdgeInsets.only(
-                              left: index == 1 ? 8 : 0,
-                              right:
-                                  index == model.categories.length - 1 ? 16 : 0,
-                            ),
-
-                            child: index == 0
-                                ? null
-                                : DefaultCardWidget(
-                                    title: model.categories[index].name,
-                                    onTap: () => Navigator.pop(context, index),
-                                    selected: model.note.categoryId ==
-                                        model.categories[index].id,
-                                  ),
-                          ),
-                        ),
-                      ),
-
-                      const Gap(8),
-
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            ///
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all(
-                                  Theme.of(context).primaryColor),
-                              foregroundColor: WidgetStateProperty.all(
-                                Theme.of(context).scaffoldBackgroundColor,
-                              ),
-                              elevation: WidgetStatePropertyAll(4),
-                            ),
-
-                            onPressed: () {
-                              if (model.note.categoryId != 'all') {
-                                model.changeCategory();
-
-                                Navigator.pop(context);
-
-                                DefaultToast.show('Категория удалена');
-                              } else {
-                                Navigator.pop(context);
-                              }
-                            },
-
-                            child: model.note.categoryId != 'all'
-                                ? Text('Убрать категорию')
-                                : Text('Отмена'),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
-            ).then((selectedIndex) {
-              if (selectedIndex != null) {
-                DefaultToast.show(
-                    'Выбрана категория: ${model.categories[selectedIndex].name}');
-
-                model.changeCategory(id: model.categories[selectedIndex].id);
-              }
-            });
-            break;
-          case 'delete':
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide.none,
-                  ),
-                  titlePadding:
-                      const EdgeInsets.only(top: 24, left: 24, bottom: 12),
-                  actionsPadding:
-                      EdgeInsets.only(bottom: 12, left: 12, right: 12),
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  title: Text('Вы уверены?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Нет',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        model.deleteNote();
-                      },
-                      child: const Text(
-                        'Да',
-                        style: TextStyle(fontSize: 20, color: Colors.red),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-            break;
-        }
-      },
-
       itemBuilder: model.isLoading
           ? []
           : <PopupMenuEntry<String>>[
@@ -254,6 +93,73 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                 ),
               ),
             ],
+
+      onSelected: (p0) {
+        switch (p0) {
+          case 'create_notification':
+            DefaultToast.show('В разработке...');
+            break;
+          case 'add_to_category':
+            showDialog<int>(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  ///
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+                  elevation: 0,
+
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide.none,
+                  ),
+
+                  titlePadding: const EdgeInsets.only(top: 24, left: 24),
+                  contentPadding: const EdgeInsets.only(
+                      top: 12, bottom: 24, left: 16, right: 16),
+
+                  title: const Text('Выберите категорию'),
+
+                  content: SizedBox(
+                    ///
+                    width: 500,
+                    height: 40,
+
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: ListView.separated(
+                        ///
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        physics: const AlwaysScrollableScrollPhysics(),
+
+                        itemCount: model.categories.length,
+
+                        separatorBuilder: (context, index) => const Gap(8),
+
+                        itemBuilder: (context, index) => DefaultCardWidget(
+                          title: model.categories[index].name,
+                          onTap: () {
+                            model.changeCategory(
+                              id: model.categories[index].id,
+                            );
+                            Navigator.pop(context, index);
+                          },
+                          selected: model.note.categoryId ==
+                              model.categories[index].id,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+            break;
+          case 'delete':
+            model.deleteNote();
+            break;
+        }
+      },
     );
   }
 }

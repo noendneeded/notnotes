@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
+import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_container.dart/focusable_container.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,7 @@ class ListAppBarWidget extends StatelessWidget {
 
               controller: model.listController,
 
-              onChanged: (value) => model.search(),
+              onChanged: (value) => model.filter(),
 
               ///
               decoration: InputDecoration(
@@ -55,7 +56,9 @@ class ListAppBarWidget extends StatelessWidget {
 
           IconButton(
             onPressed: () {
-              kDebugMode ? model.openAdminPage() : null;
+              kDebugMode
+                  ? model.openAdminPage()
+                  : DefaultToast.show('В разработке...');
             },
             icon: Icon(
               Icons.circle,

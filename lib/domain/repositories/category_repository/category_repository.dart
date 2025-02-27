@@ -37,6 +37,8 @@ class CategoryRepository implements ICategoryRepository {
       return CategoryEntity.fromJson(jsonMap);
     }).toList());
 
+    result.sort((a, b) => a.created.compareTo(b.created));
+
     return result;
   }
 
