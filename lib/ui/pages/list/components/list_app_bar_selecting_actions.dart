@@ -85,7 +85,53 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
             onSelected: (p0) {
               switch (p0) {
                 case 'delete':
-                  model.deleteNotes();
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      ///
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+
+                      elevation: 0,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide.none,
+                      ),
+
+                      titlePadding: const EdgeInsets.only(top: 24, left: 24),
+                      contentPadding: const EdgeInsets.only(
+                          top: 12, bottom: 24, left: 16, right: 16),
+                      actionsPadding: const EdgeInsets.only(
+                          bottom: 12, left: 12, right: 12),
+
+                      title: const Text('Вы уверены?'),
+
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Нет',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            model.deleteNotes();
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Да',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  // model.deleteNotes();
                   break;
                 case 'add_to_category':
                   showDialog<int>(

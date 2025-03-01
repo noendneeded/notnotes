@@ -90,7 +90,7 @@ class ListBodyWidget extends StatelessWidget {
                                 context: context,
                                 position: position,
 
-                                elevation: 2,
+                                elevation: 4,
                                 color:
                                     Theme.of(context).scaffoldBackgroundColor,
                                 shape: RoundedRectangleBorder(

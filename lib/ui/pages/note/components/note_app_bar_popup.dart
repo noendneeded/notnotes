@@ -57,7 +57,7 @@ class NoteAppBarPopupWidget extends StatelessWidget {
 
                     Text(
                       model.note.categoryId == 'all'
-                          ? 'Добавить категорию'
+                          ? 'Добавить в категорию'
                           : 'Изменить категорию',
                       style: TextStyle(
                         fontSize: 16,
@@ -156,7 +156,52 @@ class NoteAppBarPopupWidget extends StatelessWidget {
             );
             break;
           case 'delete':
-            model.deleteNote();
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                ///
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+                elevation: 0,
+
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide.none,
+                ),
+
+                titlePadding: const EdgeInsets.only(top: 24, left: 24),
+                contentPadding: const EdgeInsets.only(
+                    top: 12, bottom: 24, left: 16, right: 16),
+                actionsPadding:
+                    const EdgeInsets.only(bottom: 12, left: 12, right: 12),
+
+                title: const Text('Вы уверены?'),
+
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Нет',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      model.deleteNote();
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Да',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            );
+            // model.deleteNote();
             break;
         }
       },

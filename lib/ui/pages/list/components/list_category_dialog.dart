@@ -101,6 +101,7 @@ abstract class ListCategoryDialog {
           actions: [
             TextButton(
               onPressed: () {
+                model.categoryController.text = '';
                 Navigator.pop(context);
               },
               child: const Text(
@@ -112,6 +113,12 @@ abstract class ListCategoryDialog {
               onPressed: () async {
                 if (model.categoryController.value.text.isEmpty) {
                   DefaultToast.show('Название не может быть пустым');
+                  return;
+                }
+
+                if (model.categories.any((category) =>
+                    category.name == model.categoryController.value.text)) {
+                  DefaultToast.show('Имя категории должно быть уникальным');
                   return;
                 }
 

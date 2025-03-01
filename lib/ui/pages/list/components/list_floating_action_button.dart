@@ -14,28 +14,12 @@ class ListFloatingActionButtonWidget extends StatelessWidget {
       backgroundColor: Theme.of(context).primaryColor,
       foregroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-      onPressed: () => model.noteStates.containsValue(true)
-          ? model.deleteNotes()
-          : model.openNotePageWithCategory(),
+      onPressed: () => model.openNotePageWithCategory(),
 
-      child: AnimatedSwitcher(
-        ///
-        duration: const Duration(milliseconds: 150),
-
-        transitionBuilder: (child, animation) =>
-            FadeTransition(opacity: animation, child: child),
-
-        child: model.noteStates.containsValue(true)
-            ? Icon(
-                Icons.delete_rounded,
-                key: const ValueKey('delete'),
-                size: 32,
-              )
-            : Icon(
-                Icons.add_rounded,
-                key: const ValueKey('add'),
-                size: 32,
-              ),
+      child: Icon(
+        Icons.add_rounded,
+        key: const ValueKey('add'),
+        size: 32,
       ),
     );
   }
