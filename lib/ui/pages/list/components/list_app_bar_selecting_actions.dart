@@ -29,6 +29,30 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
             itemBuilder: <PopupMenuEntry<String>>[
               ///
               PopupMenuItem<String>(
+                value: 'pin',
+                child: Row(
+                  children: [
+                    ///
+                    Icon(
+                      Icons.push_pin_outlined,
+                      size: 20,
+                    ),
+
+                    const Gap(8),
+
+                    Text(
+                      model.getCommonNotesPinMode() ? 'Закрепить' : 'Открепить',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              PopupMenuDivider(),
+
+              PopupMenuItem<String>(
                 value: 'add_to_category',
                 child: Row(
                   children: [
@@ -41,7 +65,7 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                     const Gap(8),
 
                     Text(
-                      'Добавить в категорию',
+                      'Изменить категорию',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -84,6 +108,9 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
 
             onSelected: (p0) {
               switch (p0) {
+                case 'pin':
+                  model.pinNotes();
+                  break;
                 case 'delete':
                   showDialog(
                     context: context,
@@ -103,9 +130,15 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                       contentPadding: const EdgeInsets.only(
                           top: 12, bottom: 24, left: 16, right: 16),
                       actionsPadding: const EdgeInsets.only(
-                          bottom: 12, left: 12, right: 12),
+                          top: 12, bottom: 12, left: 12, right: 12),
 
-                      title: const Text('Вы уверены?'),
+                      title: const Text(
+                        'Вы уверены?',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
 
                       actions: [
                         TextButton(
@@ -114,7 +147,10 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                           },
                           child: const Text(
                             'Нет',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
                         TextButton(
@@ -125,13 +161,16 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                           },
                           child: const Text(
                             'Да',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   );
-                  // model.deleteNotes();
                   break;
                 case 'add_to_category':
                   showDialog<int>(
@@ -153,7 +192,13 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                         contentPadding: const EdgeInsets.only(
                             top: 12, bottom: 24, left: 16, right: 16),
 
-                        title: const Text('Выберите категорию'),
+                        title: const Text(
+                          'Выберите категорию',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
 
                         content: SizedBox(
                           ///

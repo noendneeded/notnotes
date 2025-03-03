@@ -187,10 +187,32 @@ class ListBodyWidget extends StatelessWidget {
 
                   separatorBuilder: (context, index) => const Gap(16),
 
-                  itemBuilder: (context, index) => ListNoteTileWidget(
-                    note: model.notesFiltered[index],
-                    index: index,
-                  ),
+                  itemBuilder: (context, index) => index ==
+                          model.pinnedCount - 1
+                      ? Column(
+                          children: [
+                            ListNoteTileWidget(
+                              note: model.notesFiltered[index],
+                              index: index,
+                            ),
+                            const Gap(16),
+                            if (index != model.notesFiltered.length - 1)
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .highlightColor
+                                      .withAlpha(60),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                          ],
+                        )
+                      : ListNoteTileWidget(
+                          note: model.notesFiltered[index],
+                          index: index,
+                        ),
                 ),
         ),
       ],

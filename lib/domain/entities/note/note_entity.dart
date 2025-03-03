@@ -11,6 +11,7 @@ class NoteEntity {
     required this.categoryId,
     required this.created,
     required this.updated,
+    this.pinned = false,
   });
 
   final String id;
@@ -20,6 +21,9 @@ class NoteEntity {
 
   @JsonKey(defaultValue: '')
   String content;
+
+  @JsonKey(defaultValue: false)
+  bool pinned;
 
   @JsonKey(defaultValue: '')
   String categoryId;

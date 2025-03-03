@@ -16,6 +16,7 @@ class ListViewModel extends ChangeNotifier {
   late List<NoteEntity> _notes;
   late List<NoteEntity> notesFiltered;
   Map<int, bool> noteStates = {};
+  int pinnedCount = 0;
 
   late List<CategoryEntity> categories;
   int categorySelected = 0;
@@ -37,25 +38,11 @@ class ListViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> _asyncInit() async {
-    _isLoading = true;
-    notifyListeners();
-
-    /// Инициализация заметок
-    _notes = await noteRepository.getAllNotes();
-    _notes.sort((a, b) => b.updated.compareTo(a.updated));
-
-    for (int i = 0; i < _notes.length; i++) {
-      noteStates[i] = false;
-    }
-
+    _notes = [];
     notesFiltered = [];
-    notesFiltered.addAll(_notes);
+    categories = [];
 
-    /// Инициализация категорий
-    categories = await categoryRepository.getCategoryList();
-
-    _isLoading = false;
-    notifyListeners();
+    await refresh();
   }
 
   /// Обновление списка заметок
@@ -116,6 +103,16 @@ class ListViewModel extends ChangeNotifier {
           .toList();
     }
 
+    /// Закрепление
+    notesFiltered.sort((a, b) {
+      if (a.pinned != b.pinned) {
+        return a.pinned ? -1 : 1;
+      }
+      return b.updated.compareTo(a.updated);
+    });
+
+    pinnedCount = notesFiltered.where((note) => note.pinned).length;
+
     noteStates.clear();
     for (int i = 0; i < notesFiltered.length; i++) {
       noteStates[i] = false;
@@ -123,6 +120,48 @@ class ListViewModel extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  /// Получить состояние закрепления заметок (закреплены или нет)
+  bool getCommonNotesPinMode() {
+    final selectedIndices = noteStates.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    for (var index in selectedIndices) {
+      if (!notesFiltered[index].pinned) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /// Закрепление заметок
+  pinNotes() {
+    final mode = getCommonNotesPinMode();
+
+    final selectedIndices = noteStates.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    for (var index in selectedIndices) {
+      final note = NoteEntity(
+        id: notesFiltered[index].id,
+        title: notesFiltered[index].title,
+        content: notesFiltered[index].content,
+        categoryId: notesFiltered[index].categoryId,
+        created: notesFiltered[index].created,
+        updated: notesFiltered[index].updated,
+        pinned: mode,
+      );
+
+      noteRepository.createOrUpdateNote(note);
+    }
+
+    refresh();
   }
 
   /// Получение общей категории
@@ -227,10 +266,11 @@ class ListViewModel extends ChangeNotifier {
         .push('${GoRouterState.of(context).fullPath!}/${AppRoutes.note}');
 
     if (result == true) {
-      await refresh();
+      await refresh(categoryIndex: categorySelected);
     }
   }
 
+  /// Переход на страницу 'Note' с передачей категории
   openNotePageWithCategory() async {
     final result = await context.push(
       '${GoRouterState.of(context).fullPath!}/${AppRoutes.note}',
@@ -245,7 +285,7 @@ class ListViewModel extends ChangeNotifier {
     );
 
     if (result == true) {
-      await refresh();
+      await refresh(categoryIndex: categorySelected);
     }
   }
 
@@ -253,11 +293,11 @@ class ListViewModel extends ChangeNotifier {
   openNotePageWithIndex(int index) async {
     final result = await context.push(
       '${GoRouterState.of(context).fullPath!}/${AppRoutes.note}',
-      extra: _notes[index],
+      extra: notesFiltered[index],
     );
 
     if (result == true) {
-      await refresh();
+      await refresh(categoryIndex: categorySelected);
     }
   }
 

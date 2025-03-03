@@ -75,11 +75,19 @@ abstract class ListCategoryDialog {
           // backgroundColor: Colors.transparent,
 
           titlePadding: const EdgeInsets.only(top: 24, left: 24),
+          contentPadding:
+              const EdgeInsets.only(top: 12, bottom: 4, left: 24, right: 24),
           actionsPadding: EdgeInsets.only(bottom: 12, left: 12, right: 12),
 
           elevation: 0,
 
-          title: Text('Создать категорию'),
+          title: Text(
+            'Создать категорию',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
           content: ConstrainedBox(
             ///
             constraints: BoxConstraints(minWidth: 500),
@@ -106,7 +114,10 @@ abstract class ListCategoryDialog {
               },
               child: const Text(
                 'Отмена',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
             TextButton(
@@ -128,7 +139,10 @@ abstract class ListCategoryDialog {
               },
               child: const Text(
                 'ОК',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ],

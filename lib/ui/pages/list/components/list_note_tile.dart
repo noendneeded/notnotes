@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:notnotes/domain/entities/note/note_entity.dart';
@@ -79,28 +79,30 @@ class ListNoteTileWidget extends StatelessWidget {
                     child: Row(
                       children: [
                         ///
-                        Expanded(
-                          flex: 5,
-                          child: Text(
-                            maxLines: 1,
+                        Text(
+                          maxLines: 1,
 
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-
-                            ///
-                            note.title,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                            overflow: TextOverflow.ellipsis,
                           ),
+
+                          ///
+                          note.title,
                         ),
 
-                        if (kDebugMode)
-                          Text(
-                            note.categoryId.isNotEmpty
-                                ? note.categoryId
-                                : 'empty',
-                          )
+                        const Spacer(),
+
+                        if (note.pinned)
+                          Transform.rotate(
+                            angle: 45 * math.pi / 180,
+                            child: Icon(
+                              Icons.push_pin_rounded,
+                              color: Theme.of(context).hintColor.withAlpha(80),
+                              size: 16,
+                            ),
+                          ),
                       ],
                     ),
                   ),

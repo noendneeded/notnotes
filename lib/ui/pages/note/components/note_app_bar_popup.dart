@@ -56,9 +56,7 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                     const Gap(8),
 
                     Text(
-                      model.note.categoryId == 'all'
-                          ? 'Добавить в категорию'
-                          : 'Изменить категорию',
+                      'Изменить категорию',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -118,7 +116,13 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                   contentPadding: const EdgeInsets.only(
                       top: 12, bottom: 24, left: 16, right: 16),
 
-                  title: const Text('Выберите категорию'),
+                  title: const Text(
+                    'Выберите категорию',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
 
                   content: SizedBox(
                     ///
@@ -172,10 +176,16 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                 titlePadding: const EdgeInsets.only(top: 24, left: 24),
                 contentPadding: const EdgeInsets.only(
                     top: 12, bottom: 24, left: 16, right: 16),
-                actionsPadding:
-                    const EdgeInsets.only(bottom: 12, left: 12, right: 12),
+                actionsPadding: const EdgeInsets.only(
+                    top: 12, bottom: 12, left: 12, right: 12),
 
-                title: const Text('Вы уверены?'),
+                title: const Text(
+                  'Вы уверены?',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
 
                 actions: [
                   TextButton(
@@ -184,7 +194,10 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                     },
                     child: const Text(
                       'Нет',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                   TextButton(
@@ -195,7 +208,11 @@ class NoteAppBarPopupWidget extends StatelessWidget {
                     },
                     child: const Text(
                       'Да',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
                 ],
