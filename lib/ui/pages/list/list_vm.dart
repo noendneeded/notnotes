@@ -192,13 +192,13 @@ class ListViewModel extends ChangeNotifier {
         .toList();
 
     for (var index in selectedIndices) {
-      final updatedNote = _notes[index];
+      final updatedNote = notesFiltered[index];
       updatedNote.categoryId = id;
 
-      noteRepository.createOrUpdateNote(updatedNote);
+      await noteRepository.createOrUpdateNote(updatedNote);
     }
 
-    await refresh();
+    await refresh(categoryIndex: categorySelected);
   }
 
   /// Выбор категории
@@ -222,7 +222,7 @@ class ListViewModel extends ChangeNotifier {
 
     categoryRepository.createOrUpdateCategory(category);
 
-    refresh(categoryIndex: categories.length);
+    refresh(categoryIndex: categorySelected);
   }
 
   /// Редактирование категории

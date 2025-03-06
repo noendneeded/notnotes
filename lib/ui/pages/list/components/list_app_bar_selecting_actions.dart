@@ -221,8 +221,8 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                               itemBuilder: (context, index) =>
                                   DefaultCardWidget(
                                 title: model.categories[index].name,
-                                onTap: () {
-                                  model.changeNotesCategory(
+                                onTap: () async {
+                                  await model.changeNotesCategory(
                                       model.categories[index].id);
                                   Navigator.pop(context, index);
                                 },
