@@ -90,6 +90,10 @@ class ListBodyWidget extends StatelessWidget {
                                 context: context,
                                 position: position,
 
+                                constraints: BoxConstraints(
+                                  maxWidth: 200,
+                                ),
+
                                 elevation: 4,
                                 color:
                                     Theme.of(context).scaffoldBackgroundColor,
@@ -98,8 +102,34 @@ class ListBodyWidget extends StatelessWidget {
                                 ),
 
                                 items: [
+                                  ///
+                                  PopupMenuItem<String>(
+                                    value: 'edit',
+                                    height: 36,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.edit_rounded,
+                                          size: 18,
+                                          color: Colors.black,
+                                        ),
+                                        const Gap(8),
+                                        Text(
+                                          'Изменить категорию',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  PopupMenuDivider(),
+
                                   PopupMenuItem<String>(
                                     value: 'delete',
+                                    height: 36,
                                     child: Row(
                                       children: [
                                         Icon(
@@ -120,9 +150,18 @@ class ListBodyWidget extends StatelessWidget {
                                   ),
                                 ],
                               );
-                              if (selected == 'delete') {
-                                await model
-                                    .deleteCategory(model.categories[index].id);
+                              switch (selected) {
+                                case 'delete':
+                                  await model.deleteCategory(
+                                    model.categories[index].id,
+                                  );
+                                  break;
+                                case 'edit':
+                                  ListCategoryDialog.editCategory(
+                                    id: model.categories[index].id,
+                                    context: context,
+                                  );
+                                  break;
                               }
                             },
                           );

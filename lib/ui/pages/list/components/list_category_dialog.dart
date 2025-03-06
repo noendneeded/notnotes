@@ -56,6 +56,103 @@ abstract class ListCategoryDialog {
     );
   }
 
+  static editCategory({required BuildContext context, required String id}) {
+    final model = context.read<ListViewModel>();
+
+    /// Начальное значение контроллера - название редактируемой категории
+    model.categoryController.text =
+        model.categories.singleWhere((category) => category.id == id).name;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          ///
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide.none,
+          ),
+
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          // backgroundColor: Colors.transparent,
+
+          titlePadding: const EdgeInsets.only(top: 24, left: 24),
+          contentPadding:
+              const EdgeInsets.only(top: 12, bottom: 4, left: 24, right: 24),
+          actionsPadding: EdgeInsets.only(bottom: 12, left: 12, right: 12),
+
+          elevation: 0,
+
+          title: Text(
+            'Изменить категорию',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          content: ConstrainedBox(
+            ///
+            constraints: BoxConstraints(minWidth: 500),
+
+            child: FocusableContainerWidget(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: 12,
+                ),
+                child: DefaultTextFormWidget(
+                  controller: model.categoryController,
+                  hint: 'Название',
+                ),
+              ),
+            ),
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () {
+                model.categoryController.text = '';
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Отмена',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (model.categoryController.value.text.isEmpty) {
+                  DefaultToast.show('Название не может быть пустым');
+                  return;
+                }
+
+                if (model.categories.any((category) =>
+                    category.name == model.categoryController.value.text)) {
+                  DefaultToast.show('Название должно быть уникальным');
+                  return;
+                }
+
+                await model.editCategory(id);
+
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'ОК',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static addCategory({
     required BuildContext context,
   }) {

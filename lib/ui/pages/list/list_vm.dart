@@ -161,7 +161,7 @@ class ListViewModel extends ChangeNotifier {
       noteRepository.createOrUpdateNote(note);
     }
 
-    refresh();
+    refresh(categoryIndex: categorySelected);
   }
 
   /// Получение общей категории
@@ -223,6 +223,23 @@ class ListViewModel extends ChangeNotifier {
     categoryRepository.createOrUpdateCategory(category);
 
     refresh(categoryIndex: categories.length);
+  }
+
+  /// Редактирование категории
+  editCategory(String id) async {
+    final oldCategory = categories.singleWhere((category) => category.id == id);
+
+    final category = CategoryEntity(
+      id: oldCategory.id,
+      name: categoryController.value.text,
+      created: oldCategory.created,
+    );
+
+    categoryController.text = '';
+
+    categoryRepository.createOrUpdateCategory(category);
+
+    refresh(categoryIndex: categorySelected);
   }
 
   /// Удаление категории
