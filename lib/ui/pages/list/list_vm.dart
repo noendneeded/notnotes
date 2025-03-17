@@ -317,13 +317,4 @@ class ListViewModel extends ChangeNotifier {
       await refresh(categoryIndex: categorySelected);
     }
   }
-
-  /// Переход на страницу 'Admin' (только kDebugMode)
-  openAdminPage() async {
-    final result = await context.push(AppRoutes.admin);
-
-    if (result == true) {
-      await refresh();
-    }
-  }
 }

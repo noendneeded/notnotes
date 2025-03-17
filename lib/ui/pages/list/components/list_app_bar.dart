@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
@@ -55,11 +54,7 @@ class ListAppBarWidget extends StatelessWidget {
           // ),
 
           IconButton(
-            onPressed: () {
-              kDebugMode
-                  ? model.openAdminPage()
-                  : DefaultToast.show('В разработке...');
-            },
+            onPressed: () => DefaultToast.show('В разработке...'),
             icon: Icon(
               Icons.circle,
               color: Colors.black,

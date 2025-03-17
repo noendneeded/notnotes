@@ -8,12 +8,6 @@ abstract class AppRouter {
 
     ///
     routes: [
-      /// Страница 'Admin'
-      GoRoute(
-        path: AppRoutes.admin,
-        builder: (context, state) => PageFactory().makeAdminPage(),
-      ),
-
       /// Страница 'List'
       GoRoute(
         path: AppRoutes.list,
