@@ -1,7 +1,7 @@
 name: notnotes
 description: "Not a Simple Notes."
 publish_to: 'none'
-version: 0.2.5
+version: 0.3.1.5
 
 environment:
   sdk: ^3.6.2
