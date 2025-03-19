@@ -66,7 +66,7 @@ class ListViewModel extends ChangeNotifier {
 
     /// Обновление категорий
     categories.clear();
-    categories = await categoryRepository.getCategoryList();
+    categories = await categoryRepository.getAllCategories();
     categorySelected = categoryIndex;
 
     filter();

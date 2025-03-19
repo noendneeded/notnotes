@@ -18,7 +18,6 @@ class ListFloatingActionButtonWidget extends StatelessWidget {
 
       child: Icon(
         Icons.add_rounded,
-        key: const ValueKey('add'),
         size: 32,
       ),
     );

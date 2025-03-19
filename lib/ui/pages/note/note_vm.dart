@@ -75,7 +75,7 @@ class NoteViewModel extends ChangeNotifier {
     notifyListeners();
 
     /// Инициализация категорий
-    categories = await categoryRepository.getCategoryList();
+    categories = await categoryRepository.getAllCategories();
 
     changeCategory(id: note?.categoryId);
 

@@ -4,7 +4,7 @@ abstract class ICategoryRepository {
   Future<void> init();
 
   /// Получить список категорий
-  Future<List<CategoryEntity>> getCategoryList();
+  Future<List<CategoryEntity>> getAllCategories();
 
   /// Получить категорию по ID
   Future<CategoryEntity> getCategoryById(String id);

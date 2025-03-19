@@ -27,7 +27,7 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
-  Future<List<CategoryEntity>> getCategoryList() async {
+  Future<List<CategoryEntity>> getAllCategories() async {
     final result = <CategoryEntity>[];
 
     result.addAll(kPredefinedCategories);

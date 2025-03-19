@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_container.dart/focusable_container.dart';
@@ -20,14 +21,21 @@ abstract class ListCategoryDialog {
           ),
 
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          // backgroundColor: Colors.transparent,
 
-          titlePadding: const EdgeInsets.only(top: 24, left: 24, bottom: 12),
-          actionsPadding: EdgeInsets.only(bottom: 12, left: 12, right: 12),
+          titlePadding: const EdgeInsets.only(top: 16, left: 16),
+          contentPadding:
+              const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+          actionsPadding: EdgeInsets.only(bottom: 4, left: 4, right: 4),
 
           elevation: 0,
 
-          title: Text('Удалить категорию?'),
+          title: Text(
+            'Удалить категорию?',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
 
           actions: [
             TextButton(
@@ -36,7 +44,7 @@ abstract class ListCategoryDialog {
               },
               child: const Text(
                 'Нет',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 16),
               ),
             ),
             TextButton(
@@ -47,7 +55,7 @@ abstract class ListCategoryDialog {
               },
               child: const Text(
                 'Да',
-                style: TextStyle(fontSize: 20, color: Colors.red),
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             ),
           ],
@@ -74,19 +82,18 @@ abstract class ListCategoryDialog {
           ),
 
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          // backgroundColor: Colors.transparent,
 
-          titlePadding: const EdgeInsets.only(top: 24, left: 24),
+          titlePadding: const EdgeInsets.only(top: 16, left: 16),
           contentPadding:
-              const EdgeInsets.only(top: 12, bottom: 4, left: 24, right: 24),
-          actionsPadding: EdgeInsets.only(bottom: 12, left: 12, right: 12),
+              const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+          actionsPadding: EdgeInsets.only(bottom: 4, left: 4, right: 4),
 
           elevation: 0,
 
           title: Text(
             'Изменить категорию',
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -117,7 +124,7 @@ abstract class ListCategoryDialog {
               child: const Text(
                 'Отмена',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -142,7 +149,7 @@ abstract class ListCategoryDialog {
               child: const Text(
                 'ОК',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -169,38 +176,58 @@ abstract class ListCategoryDialog {
           ),
 
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          // backgroundColor: Colors.transparent,
 
-          titlePadding: const EdgeInsets.only(top: 24, left: 24),
+          titlePadding: const EdgeInsets.only(top: 16, left: 16),
           contentPadding:
-              const EdgeInsets.only(top: 12, bottom: 4, left: 24, right: 24),
-          actionsPadding: EdgeInsets.only(bottom: 12, left: 12, right: 12),
+              const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+          actionsPadding: EdgeInsets.only(bottom: 4, left: 4, right: 4),
 
           elevation: 0,
 
           title: Text(
             'Создать категорию',
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               fontWeight: FontWeight.w400,
             ),
           ),
-          content: ConstrainedBox(
-            ///
-            constraints: BoxConstraints(minWidth: 500),
 
-            child: FocusableContainerWidget(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 12,
+          content: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 500),
+            child: TextFormField(
+              ///
+              decoration: InputDecoration(
+                ///
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade700,
+                    width: 2,
+                  ),
                 ),
-                child: DefaultTextFormWidget(
-                  controller: model.categoryController,
-                  hint: 'Название',
+
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(
+                    color: Colors.black,
+                    width: 3,
+                  ),
                 ),
               ),
             ),
+
+            // child: FocusableContainerWidget(
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(
+            //       vertical: 4,
+            //       horizontal: 12,
+            //     ),
+            //     child: DefaultTextFormWidget(
+            //       controller: model.categoryController,
+            //       hint: 'Название',
+            //     ),
+            //   ),
+            // ),
           ),
 
           actions: [
@@ -212,7 +239,7 @@ abstract class ListCategoryDialog {
               child: const Text(
                 'Отмена',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -237,7 +264,7 @@ abstract class ListCategoryDialog {
               child: const Text(
                 'ОК',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),

@@ -9,14 +9,9 @@ import 'package:provider/provider.dart';
 class ListNoteTileWidget extends StatelessWidget {
   const ListNoteTileWidget({
     super.key,
-    // required this.title,
-    // required this.content,
     required this.index,
     required this.note,
   });
-
-  // final String title;
-  // final String content;
 
   final int index;
 

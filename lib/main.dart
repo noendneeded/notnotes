@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:notnotes/app.dart';
-import 'package:notnotes/domain/di/injection.dart';
+import 'package:notnotes/domain/dependencies/dependencies.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 
