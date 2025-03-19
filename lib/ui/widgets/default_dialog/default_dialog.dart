@@ -93,7 +93,7 @@ abstract class DefaultDialog {
         titlePadding: const EdgeInsets.only(top: 16, left: 16),
         contentPadding:
             const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
-        actionsPadding: EdgeInsets.only(bottom: 4, left: 4, right: 4),
+        actionsPadding: EdgeInsets.only(top: 8, bottom: 4, left: 4, right: 4),
 
         elevation: 0,
 
@@ -117,7 +117,7 @@ abstract class DefaultDialog {
             ),
           ),
           TextButton(
-            onPressed: onTapNegative,
+            onPressed: onTapPositive,
             child: const Text(
               'Да',
               style: TextStyle(
