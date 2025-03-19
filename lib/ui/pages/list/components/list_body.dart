@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:notnotes/ui/pages/list/components/list_category_dialog.dart';
-import 'package:notnotes/ui/pages/list/components/list_note_tile.dart';
+import 'package:notnotes/ui/pages/list/widgets/list_dialog.dart';
+import 'package:notnotes/ui/pages/list/widgets/list_note_tile.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
 import 'package:notnotes/ui/widgets/default_card/default_card.dart';
 import 'package:notnotes/ui/widgets/default_card/default_card_add.dart';
@@ -61,115 +61,124 @@ class ListBodyWidget extends StatelessWidget {
                                 ? null
                                 : model.selectCategory(index),
 
-                            onLongPressStart: (details) async {
-                              final RenderBox cardBox = cardKey.currentContext!
-                                  .findRenderObject() as RenderBox;
+                            onLongPressStart: index != 0 && index != 1
+                                ? (details) async {
+                                    final RenderBox cardBox = cardKey
+                                        .currentContext!
+                                        .findRenderObject() as RenderBox;
 
-                              final Offset cardPosition =
-                                  cardBox.localToGlobal(Offset.zero);
+                                    final Offset cardPosition =
+                                        cardBox.localToGlobal(Offset.zero);
 
-                              final Size cardSize = cardBox.size;
+                                    final Size cardSize = cardBox.size;
 
-                              final RenderBox overlay = Overlay.of(context)
-                                  .context
-                                  .findRenderObject() as RenderBox;
+                                    final RenderBox overlay =
+                                        Overlay.of(context)
+                                            .context
+                                            .findRenderObject() as RenderBox;
 
-                              final RelativeRect position =
-                                  RelativeRect.fromRect(
-                                Rect.fromLTWH(
-                                  cardPosition.dx,
-                                  cardPosition.dy + cardSize.height,
-                                  cardSize.width,
-                                  cardSize.height,
-                                ),
-                                Offset.zero & overlay.size,
-                              );
+                                    final RelativeRect position =
+                                        RelativeRect.fromRect(
+                                      Rect.fromLTWH(
+                                        cardPosition.dx,
+                                        cardPosition.dy + cardSize.height,
+                                        cardSize.width,
+                                        cardSize.height,
+                                      ),
+                                      Offset.zero & overlay.size,
+                                    );
 
-                              final selected = await showMenu<String>(
-                                ///
-                                context: context,
-                                position: position,
+                                    final selected = await showMenu<String>(
+                                      ///
+                                      context: context,
+                                      position: position,
 
-                                constraints: BoxConstraints(
-                                  maxWidth: 200,
-                                ),
+                                      constraints: BoxConstraints(
+                                        maxWidth: 200,
+                                      ),
 
-                                elevation: 4,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
+                                      elevation: 4,
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
 
-                                items: [
-                                  ///
-                                  PopupMenuItem<String>(
-                                    value: 'edit',
-                                    height: 36,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.edit_rounded,
-                                          size: 18,
-                                          color: Colors.black,
+                                      items: [
+                                        ///
+                                        PopupMenuItem<String>(
+                                          value: 'edit',
+                                          height: 36,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.edit_rounded,
+                                                size: 18,
+                                                color: Colors.black,
+                                              ),
+                                              const Gap(8),
+                                              Text(
+                                                'Изменить категорию',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        const Gap(8),
-                                        Text(
-                                          'Изменить категорию',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
+
+                                        PopupMenuDivider(),
+
+                                        PopupMenuItem<String>(
+                                          value: 'delete',
+                                          height: 36,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.delete_rounded,
+                                                size: 18,
+                                                color: Colors.red.shade700,
+                                              ),
+                                              const Gap(8),
+                                              Text(
+                                                'Удалить категорию',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.red.shade700,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
-                                    ),
-                                  ),
-
-                                  PopupMenuDivider(),
-
-                                  PopupMenuItem<String>(
-                                    value: 'delete',
-                                    height: 36,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.delete_rounded,
-                                          size: 18,
-                                          color: Colors.red.shade700,
-                                        ),
-                                        const Gap(8),
-                                        Text(
-                                          'Удалить категорию',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.red.shade700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                              switch (selected) {
-                                case 'delete':
-                                  await model.deleteCategory(
-                                    model.categories[index].id,
-                                  );
-                                  break;
-                                case 'edit':
-                                  ListCategoryDialog.editCategory(
-                                    id: model.categories[index].id,
-                                    context: context,
-                                  );
-                                  break;
-                              }
-                            },
+                                    );
+                                    switch (selected) {
+                                      case 'delete':
+                                        await model.deleteCategory(
+                                          model.categories[index].id,
+                                        );
+                                        break;
+                                      case 'edit':
+                                        // ListCategoryDialog.editCategory(
+                                        //   id: model.categories[index].id,
+                                        //   context: context,
+                                        // );
+                                        ListDialog.editCategory(
+                                          context: context,
+                                          id: model.categories[index].id,
+                                        );
+                                        break;
+                                    }
+                                  }
+                                : null,
                           );
                         },
                       )
                     : DefaultCardAddWidget(
                         onTap: () =>
-                            ListCategoryDialog.addCategory(context: context),
+                            ListDialog.createCategory(context: context),
+                        // ListCategoryDialog.addCategory(context: context),
                       ),
               ),
             ),
