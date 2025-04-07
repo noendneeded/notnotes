@@ -1,3 +1,4 @@
-# notnotes
+# NotNotes
 
-A new Flutter project.
+NotNotes - not a simple notes.
+Developed using Flutter.
