@@ -10,7 +10,7 @@ class NoteView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       ///
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
 
       appBar: AppBar(actions: [NoteAppBarPopupWidget()]),
 

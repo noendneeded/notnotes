@@ -224,15 +224,36 @@ class ListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Очистка контроллера категорий
+  clearCategoryController({bool useFuture = false}) async {
+    /// Задержка нужна для плавности очистки текстового поля
+    /// Поле очистится за интерфейсом
+    if (useFuture) await Future.delayed(const Duration(milliseconds: 300));
+
+    categoryController.clear();
+    notifyListeners();
+  }
+
   /// Создание категории
   createCategory() async {
+    if (categoryController.value.text.isEmpty) {
+      DefaultToast.show('Название не может быть пустым');
+      return;
+    }
+
+    if (categories
+        .any((category) => category.name == categoryController.value.text)) {
+      DefaultToast.show('Имя категории должно быть уникальным');
+      return;
+    }
+
     final category = CategoryEntity(
       id: Uuid().v4(),
       name: categoryController.value.text.trim(),
       created: DateTime.now(),
     );
 
-    categoryController.text = '';
+    clearCategoryController();
 
     categoryRepository.createOrUpdateCategory(category);
 
@@ -241,6 +262,17 @@ class ListViewModel extends ChangeNotifier {
 
   /// Редактирование категории
   editCategory(String id) async {
+    if (categoryController.value.text.isEmpty) {
+      DefaultToast.show('Название не может быть пустым');
+      return;
+    }
+
+    if (categories
+        .any((category) => category.name == categoryController.value.text)) {
+      DefaultToast.show('Имя категории должно быть уникальным');
+      return;
+    }
+
     final oldCategory = categories.singleWhere((category) => category.id == id);
 
     final category = CategoryEntity(
@@ -249,7 +281,7 @@ class ListViewModel extends ChangeNotifier {
       created: oldCategory.created,
     );
 
-    categoryController.text = '';
+    clearCategoryController();
 
     categoryRepository.createOrUpdateCategory(category);
 

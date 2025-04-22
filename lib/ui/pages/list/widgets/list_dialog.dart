@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
-import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_card/default_card.dart';
-import 'package:notnotes/ui/widgets/default_container.dart/focusable_container.dart';
 import 'package:notnotes/ui/widgets/default_dialog/default_dialog.dart';
-import 'package:notnotes/ui/widgets/default_text_form/default_text_form.dart';
 import 'package:provider/provider.dart';
 
 abstract class ListDialog {
@@ -75,22 +72,17 @@ abstract class ListDialog {
       ),
 
       onTapPositive: () async {
-        if (model.categoryController.value.text.isEmpty) {
-          DefaultToast.show('Название не может быть пустым');
-          return;
-        }
-
-        if (model.categories.any((category) =>
-            category.name == model.categoryController.value.text)) {
-          DefaultToast.show('Имя категории должно быть уникальным');
-          return;
-        }
-
         await model.createCategory();
 
         if (context.mounted) {
-          Navigator.pop(context);
+          context.pop();
         }
+      },
+
+      onTapNegative: () {
+        model.clearCategoryController(useFuture: true);
+
+        context.pop();
       },
     );
   }
@@ -111,24 +103,22 @@ abstract class ListDialog {
 
       content: ConstrainedBox(
         constraints: BoxConstraints(minWidth: 500),
-        child: FocusableContainerWidget(
-          child: Padding(
-            ///
-            padding: const EdgeInsets.symmetric(
-              vertical: 4,
-              horizontal: 12,
-            ),
-
-            child: DefaultTextFormWidget(
-              controller: model.categoryController,
-              hint: 'Название',
-            ),
+        child: TextFormField(
+          controller: model.categoryController,
+          decoration: InputDecoration(
+            hintText: 'Название категории',
           ),
         ),
       ),
 
       onTapPositive: () {
-        model.categoryController.text = '';
+        model.editCategory(id);
+        context.pop();
+      },
+
+      onTapNegative: () {
+        model.clearCategoryController(useFuture: true);
+
         context.pop();
       },
     );
@@ -145,7 +135,7 @@ abstract class ListDialog {
       onTapPositive: () async {
         model.deleteNotes();
 
-        Navigator.pop(context);
+        context.pop();
       },
     );
   }
