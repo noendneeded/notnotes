@@ -9,6 +9,7 @@ class CategoryEntity {
     required this.name,
     required this.created,
     this.description = '',
+    this.color = '0xFFFFFFFF',
   });
 
   final String id;
@@ -18,6 +19,9 @@ class CategoryEntity {
 
   @JsonKey(defaultValue: '')
   String description;
+
+  @JsonKey(defaultValue: '0xFFFFFFFF')
+  String color;
 
   final DateTime created;
 

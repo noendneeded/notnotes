@@ -8,9 +8,11 @@ environment:
 
 dependencies:
   build_runner: ^2.4.15
+  flex_color_picker: ^3.7.0
   flex_color_scheme: ^8.1.1
   flutter:
     sdk: flutter
+  flutter_colorpicker: ^1.1.0
   fluttertoast: ^8.2.12
   font_awesome_flutter: ^10.8.0
   gap: ^3.0.1

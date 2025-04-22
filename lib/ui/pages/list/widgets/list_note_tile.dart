@@ -41,26 +41,24 @@ class ListNoteTileWidget extends StatelessWidget {
 
           ///
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: model.noteStates[index] ?? false
-                ? Theme.of(context).highlightColor
-                : Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(16),
+              color: model.noteStates[index] ?? false
+                  ? Theme.of(context).highlightColor
+                  : Theme.of(context).scaffoldBackgroundColor,
 
-            ///
-            boxShadow: model.noteStates[index] ?? false
-                ? []
-                : [DefaultBoxShadow.get(context)],
-
-            border: model.noteStates[index] ?? false
-                ? Border.all(
-                    color: Theme.of(context).primaryColor,
-                    width: 3,
-                  )
-                : null,
-          ),
+              ///
+              boxShadow: model.noteStates[index] ?? false
+                  ? []
+                  : [DefaultBoxShadow.get(context)],
+              border: Border.all(
+                color: model.noteStates[index] ?? false
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
+                width: 3,
+              )),
 
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
 

@@ -22,19 +22,55 @@ abstract class ListDialog {
 
       content: ConstrainedBox(
         constraints: BoxConstraints(minWidth: 500),
-        child: FocusableContainerWidget(
-          child: Padding(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             ///
-            padding: const EdgeInsets.symmetric(
-              vertical: 4,
-              horizontal: 12,
+            TextFormField(
+              controller: model.categoryController,
+              decoration: InputDecoration(
+                hintText: 'Название категории',
+              ),
             ),
 
-            child: DefaultTextFormWidget(
-              controller: model.categoryController,
-              hint: 'Название',
-            ),
-          ),
+            // const Gap(16),
+
+            /// TODO: Переделать выбор цвета
+
+            // Text(
+            //   'Цвет категории',
+            //   style: TextStyle(fontSize: 16),
+            // ),
+
+            // const Gap(16),
+
+            // SizedBox(
+            //   height: 32,
+            //   child: ListView.separated(
+            //     physics: AlwaysScrollableScrollPhysics(),
+            //     shrinkWrap: true,
+            //     scrollDirection: Axis.horizontal,
+            //     itemCount: model.categoryColors.length,
+            //     separatorBuilder: (context, index) => const Gap(8),
+            //     itemBuilder: (context, index) => Padding(
+            //       ///
+            //       padding: EdgeInsets.only(
+            //         left: index == 0 ? 16 : 0,
+            //         right: index == model.categories.length ? 16 : 0,
+            //       ),
+            //       child: Container(
+            //         height: 32,
+            //         width: 32,
+            //         decoration: BoxDecoration(
+            //           color: model.categoryColors[index],
+            //           borderRadius: BorderRadius.circular(8),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
         ),
       ),
 
@@ -52,7 +88,9 @@ abstract class ListDialog {
 
         await model.createCategory();
 
-        Navigator.pop(context);
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
       },
     );
   }
@@ -143,7 +181,10 @@ abstract class ListDialog {
             title: model.categories[index].name,
             onTap: () async {
               await model.changeNotesCategory(model.categories[index].id);
-              Navigator.pop(context, index);
+
+              if (context.mounted) {
+                Navigator.pop(context, index);
+              }
             },
             selected: model.categories[index].id ==
                 model.getCommonSelectedCategoryId(),

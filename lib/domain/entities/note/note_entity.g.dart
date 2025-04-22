@@ -10,10 +10,10 @@ NoteEntity _$NoteEntityFromJson(Map<String, dynamic> json) => NoteEntity(
       id: json['id'] as String,
       title: json['title'] as String? ?? '',
       content: json['content'] as String? ?? '',
-      pinned: json['pinned'] as bool? ?? false,
       categoryId: json['categoryId'] as String? ?? '',
       created: DateTime.parse(json['created'] as String),
       updated: DateTime.parse(json['updated'] as String),
+      pinned: json['pinned'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$NoteEntityToJson(NoteEntity instance) =>

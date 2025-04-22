@@ -16,6 +16,8 @@ class NotesListView extends StatelessWidget {
 
     return Scaffold(
       ///
+      resizeToAvoidBottomInset: false,
+
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: AnimatedSwitcher(

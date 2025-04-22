@@ -16,7 +16,7 @@ class NotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => NoteViewModel(
+      create: (context) => NoteViewModel(
         ///
         context: context,
 

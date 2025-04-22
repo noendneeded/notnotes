@@ -7,11 +7,13 @@ class FocusableContainerWidget extends StatefulWidget {
     required this.child,
     this.height,
     this.width,
+    this.drawShadow = true,
   });
 
   final Widget child;
   final double? height;
   final double? width;
+  final bool drawShadow;
 
   @override
   State<FocusableContainerWidget> createState() =>
@@ -51,14 +53,25 @@ class _FocusableContainerWidgetState extends State<FocusableContainerWidget> {
 
       decoration: BoxDecoration(
         ///
-        border: _hasFocus ? Border.all(color: Colors.black, width: 3) : null,
+        border: _hasFocus
+            ? Border.all(color: Colors.black, width: 3)
+            : widget.drawShadow
+                ? null
+                : Border.all(
+                    color: Colors.black,
+                    width: 1.5,
+                  ),
         borderRadius: BorderRadius.circular(16),
 
         color: _hasFocus
             ? Theme.of(context).highlightColor
             : Theme.of(context).scaffoldBackgroundColor,
 
-        boxShadow: _hasFocus ? [] : [DefaultBoxShadow.get(context)],
+        boxShadow: widget.drawShadow
+            ? _hasFocus
+                ? []
+                : [DefaultBoxShadow.get(context)]
+            : [],
       ),
 
       child: Focus(

@@ -24,6 +24,14 @@ class ListViewModel extends ChangeNotifier {
   final TextEditingController listController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
 
+  final List<Color> categoryColors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.black,
+  ];
+  Color categoryColor = Colors.white;
+
   bool _isLoading = true;
 
   ListViewModel({
@@ -208,6 +216,12 @@ class ListViewModel extends ChangeNotifier {
     notifyListeners();
 
     filter();
+  }
+
+  /// Установка цвета категории
+  setCategoryColor(Color color) {
+    categoryColor = color;
+    notifyListeners();
   }
 
   /// Создание категории
