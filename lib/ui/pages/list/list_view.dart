@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:notnotes/ui/pages/list/components/list_app_bar.dart';
 import 'package:notnotes/ui/pages/list/widgets/list_app_bar_selecting.dart';
 import 'package:notnotes/ui/pages/list/widgets/list_app_bar_selecting_actions.dart';
 import 'package:notnotes/ui/pages/list/components/list_body.dart';
 import 'package:notnotes/ui/pages/list/components/list_floating_action_button.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
+import 'package:notnotes/ui/widgets/default_dialog/default_dialog.dart';
 import 'package:provider/provider.dart';
 
 class NotesListView extends StatelessWidget {
@@ -13,6 +15,29 @@ class NotesListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<ListViewModel>();
+
+    if (model.shouldShowPermissionsSheet) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        DefaultDialog.show(
+          context: context,
+          title: 'Разрешения',
+          content: const Text(
+            'Чтобы напоминания работали корректно, приложению необходим доступ к уведомлениям и точным будильникам.',
+            style: TextStyle(fontSize: 15),
+          ),
+          onTapPositive: () async {
+            context.pop();
+            await model.requestPermissions();
+            model.markPermissionsRequested();
+          },
+          onTapNegative: () {
+            context.pop();
+            model.markPermissionsRequested();
+          },
+        );
+        // await _showPermissionsSheet(context, model);
+      });
+    }
 
     return Scaffold(
       ///
@@ -53,4 +78,46 @@ class NotesListView extends StatelessWidget {
           : ListFloatingActionButtonWidget(),
     );
   }
+
+  // Future<void> _showPermissionsSheet(
+  //     BuildContext context, ListViewModel model) {
+  //   return showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder: (_) => Padding(
+  //       padding: const EdgeInsets.all(16),
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           const Text(
+  //             'Разрешения для уведомлений',
+  //             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //           ),
+  //           const SizedBox(height: 8),
+  //           const Text(
+  //             'Чтобы напоминания работали корректно, нужно разрешить '
+  //             'показ уведомлений и точные будильники.',
+  //           ),
+  //           const SizedBox(height: 16),
+  //           ElevatedButton(
+  //             onPressed: () async {
+  //               context.pop();
+  //               await model.requestPermissions();
+  //               model.markPermissionsRequested();
+  //             },
+  //             child: const Text('Дать разрешения'),
+  //           ),
+  //           const SizedBox(height: 8),
+  //           TextButton(
+  //             onPressed: () {
+  //               context.pop();
+  //               model.markPermissionsRequested();
+  //             },
+  //             child: const Text('Не сейчас'),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

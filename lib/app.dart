@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:notnotes/router/app_router.dart';
 import 'package:notnotes/theme/app_theme.dart';
 import 'package:toastification/toastification.dart';
+
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -12,6 +15,17 @@ class App extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
 
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+
+        supportedLocales: const [
+          Locale('ru', 'RU'),
+          Locale('en', 'US'),
+        ],
+
         /// Название приложения
         title: 'NotNotes',
 
@@ -20,6 +34,7 @@ class App extends StatelessWidget {
 
         /// Навигация
         routerConfig: AppRouter.router,
+        key: rootNavigatorKey,
       ),
     );
   }

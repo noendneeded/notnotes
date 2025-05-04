@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notnotes/domain/entities/categories/category_entity.dart';
 import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
+import 'package:notnotes/domain/services/notification_service.dart';
 import 'package:notnotes/router/app_routes.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class ListViewModel extends ChangeNotifier {
@@ -34,16 +38,81 @@ class ListViewModel extends ChangeNotifier {
 
   bool _isLoading = true;
 
+  bool _shouldShowPermissionsSheet = false;
+  bool get shouldShowPermissionsSheet => _shouldShowPermissionsSheet;
+
+  late final StreamSubscription<String> _notificationSub;
+
+  /// Getter для статуса
+  bool get isLoading => _isLoading;
+
   ListViewModel({
     required this.context,
     required this.noteRepository,
     required this.categoryRepository,
   }) {
     _asyncInit();
+    _checkPermissionsOnStart();
+
+    _notificationSub = NotificationService.onNotificationClick.listen(
+      _onNotificationTap,
+    );
+
+    NotificationService.getInitialNotificationPayload().then((payload) async {
+      if (payload == null) return;
+
+      try {
+        final note = await noteRepository.getNoteById(payload);
+        note.remindAt = null;
+        await noteRepository.createOrUpdateNote(note);
+        await NotificationService.cancel(payload.hashCode);
+      } catch (_) {}
+
+      await _onNotificationTap(payload);
+    });
   }
 
-  /// Getter для статуса
-  bool get isLoading => _isLoading;
+  Future<void> _onNotificationTap(String noteId) async {
+    await refresh(categoryIndex: categorySelected);
+
+    NoteEntity note;
+    try {
+      note = await noteRepository.getNoteById(noteId);
+    } catch (e) {
+      return;
+    }
+
+    // ignore: use_build_context_synchronously
+    final result = await context.push(
+      '${AppRoutes.list}/${AppRoutes.note}',
+      extra: note,
+    );
+
+    if (result == true) {
+      await refresh(categoryIndex: categorySelected);
+    }
+  }
+
+  Future<void> _checkPermissionsOnStart() async {
+    final notifOK = await NotificationService.areNotificationsEnabled();
+    final alarmsOK = await NotificationService.areExactAlarmsPermitted();
+    if (!notifOK || !alarmsOK) {
+      _shouldShowPermissionsSheet = true;
+      notifyListeners();
+    }
+  }
+
+  Future<void> markPermissionsRequested() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('permissions_requested', true);
+    _shouldShowPermissionsSheet = false;
+    notifyListeners();
+  }
+
+  /// Запрос разрешений на уведомления и точные будильники
+  Future<void> requestPermissions() async {
+    await NotificationService.requestPermissions();
+  }
 
   Future<void> _asyncInit() async {
     _notes = [];
@@ -338,7 +407,7 @@ class ListViewModel extends ChangeNotifier {
     final result = await context.push(
       '${GoRouterState.of(context).fullPath!}/${AppRoutes.note}',
       extra: NoteEntity(
-        id: Uuid().v4(),
+        id: 'new',
         title: '',
         content: '',
         categoryId: categories[categorySelected].id,
@@ -362,5 +431,11 @@ class ListViewModel extends ChangeNotifier {
     if (result == true) {
       await refresh(categoryIndex: categorySelected);
     }
+  }
+
+  @override
+  void dispose() {
+    _notificationSub.cancel();
+    super.dispose();
   }
 }

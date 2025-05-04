@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:notnotes/ui/pages/note/note_vm.dart';
+import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_container.dart/focusable_container.dart';
 import 'package:notnotes/ui/widgets/default_text_form/default_text_form.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +55,7 @@ class NoteBodyWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ///
                     Text(
@@ -61,6 +64,18 @@ class NoteBodyWidget extends StatelessWidget {
                         fontSize: 14,
                       ),
                     ),
+
+                    if (model.note.remindAt != null) ...{
+                      const Gap(4),
+                      GestureDetector(
+                        child: Icon(
+                          Icons.alarm_rounded,
+                          size: 16,
+                        ),
+                        onTap: () => DefaultToast.show(
+                            'Напоминание на ${DateFormat('d MMMM HH:mm', 'ru_RU').format(model.note.remindAt!)}'),
+                      )
+                    },
 
                     const Spacer(),
 

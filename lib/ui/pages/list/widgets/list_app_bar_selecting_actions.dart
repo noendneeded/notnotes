@@ -58,7 +58,8 @@ class ListAppBarSelectingActionsWidget extends StatelessWidget {
                           1
                       ? 'Удалить заметки'
                       : 'Удалить заметку',
-                  color: Colors.red.shade700,
+                  iconColor: Colors.red.shade700,
+                  textColor: Colors.red.shade700,
                 ),
               ),
             ],

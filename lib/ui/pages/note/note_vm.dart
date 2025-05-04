@@ -5,6 +5,7 @@ import 'package:notnotes/domain/entities/categories/category_entity.dart';
 import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
+import 'package:notnotes/domain/services/notification_service.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,11 +31,7 @@ class NoteViewModel extends ChangeNotifier {
     required this.noteRepository,
     required this.categoryRepository,
   }) {
-    if (note != null) {
-      _note = note;
-
-      needToUpdate = true;
-    } else if (note?.id == 'new') {
+    if (note?.id == 'new') {
       final now = DateTime.now();
 
       _note = NoteEntity(
@@ -47,6 +44,10 @@ class NoteViewModel extends ChangeNotifier {
       );
 
       needToUpdate = false;
+    } else if (note != null) {
+      _note = note;
+
+      needToUpdate = true;
     } else {
       final now = DateTime.now();
 
@@ -85,22 +86,42 @@ class NoteViewModel extends ChangeNotifier {
 
   /// Создание/обновление заметки
   void createOrUpdateNote() async {
-    /// Проверка на корректность заполнения названия заметки
     if (titleController.value.text.isEmpty) {
       DefaultToast.show('Название заметки не может быть пустым');
       return;
     }
 
-    _note.title = titleController.value.text;
-    _note.content = contentController.value.text;
-
-    needToUpdate
-        ? _note.updated = DateTime.now()
-        : _note.updated = _note.created;
+    _note
+      ..title = titleController.value.text
+      ..content = contentController.value.text
+      ..updated = needToUpdate ? DateTime.now() : _note.created;
 
     await noteRepository.createOrUpdateNote(_note);
 
-    context.pop(true);
+    final int nid = _note.id.hashCode;
+
+    await NotificationService.cancel(nid);
+
+    if (_note.remindAt != null && _note.remindAt!.isAfter(DateTime.now())) {
+      final notifOK = await NotificationService.areNotificationsEnabled();
+      final alarmsOK = await NotificationService.areExactAlarmsPermitted();
+
+      if (!notifOK || !alarmsOK) {
+        await NotificationService.requestPermissions();
+      }
+
+      await NotificationService.schedule(
+        id: nid,
+        title: null,
+        body: _note.title,
+        at: _note.remindAt!,
+        payload: _note.id,
+      );
+    }
+
+    if (context.mounted) {
+      openListPage(context);
+    }
   }
 
   /// Удаление заметки
@@ -109,7 +130,27 @@ class NoteViewModel extends ChangeNotifier {
       await noteRepository.deleteNote(_note.id);
     }
 
-    openListPage(context);
+    if (context.mounted) {
+      openListPage(context);
+    }
+  }
+
+  /// Установка напоминания заметки
+  void setReminder(DateTime? dateTime) {
+    _note.remindAt = dateTime;
+
+    notifyListeners();
+  }
+
+  /// Отмена напоминания заметки
+  Future<void> removeReminder() async {
+    final int nid = _note.id.hashCode;
+
+    await NotificationService.cancel(nid);
+
+    _note.remindAt = null;
+
+    notifyListeners();
   }
 
   /// Изменение категории
@@ -136,7 +177,6 @@ class NoteViewModel extends ChangeNotifier {
 
   /// Переход на страницу 'List'
   void openListPage(BuildContext context) {
-    // Закрываем NotePage и передаём результат (true)
     context.pop(true);
   }
 }

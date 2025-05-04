@@ -12,6 +12,7 @@ class NoteEntity {
     required this.created,
     required this.updated,
     this.pinned = false,
+    this.remindAt,
   });
 
   final String id;
@@ -30,6 +31,8 @@ class NoteEntity {
 
   final DateTime created;
   DateTime updated;
+
+  DateTime? remindAt;
 
   factory NoteEntity.fromJson(Map<String, dynamic> json) =>
       _$NoteEntityFromJson(json);
