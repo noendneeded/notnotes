@@ -117,6 +117,8 @@ class NoteBodyWidget extends StatelessWidget {
                   ),
                 ),
               ),
+
+              const Gap(24),
             ],
           ),
         ),

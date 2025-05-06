@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:notnotes/data/local/predefined_notifications.dart';
+import 'package:notnotes/data/predefined/predefined_notifications.dart';
 import 'package:notnotes/domain/dependencies/dependencies.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 import 'package:timezone/data/latest_all.dart' as tz;

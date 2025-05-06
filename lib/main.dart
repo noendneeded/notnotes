@@ -11,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Настройка зависимостей --- GetIt
-  setupDependencies();
+  await setupDependencies();
 
   /// Инициализация локали --- Intl
   await initializeDateFormatting('ru_RU', null);

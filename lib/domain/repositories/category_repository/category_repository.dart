@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
-import 'package:notnotes/data/local/predefined_categories.dart';
-import 'package:notnotes/domain/entities/categories/category_entity.dart';
+import 'package:notnotes/data/predefined/predefined_categories.dart';
+import 'package:notnotes/domain/entities/category/category_entity.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 
 class CategoryRepository implements ICategoryRepository {

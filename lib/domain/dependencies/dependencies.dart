@@ -4,11 +4,17 @@ import 'package:notnotes/domain/repositories/category_repository/i_category_repo
 import 'package:notnotes/domain/repositories/note_repository/fake_note_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/note_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt getIt = GetIt.instance;
 
 /// [useFake] - использовать фейковые репозитории?
-void setupDependencies({bool useFake = false}) {
+Future<void> setupDependencies({bool useFake = false}) async {
+  /// SharedPreferences
+  getIt.registerSingletonAsync<SharedPreferences>(
+    () async => await SharedPreferences.getInstance(),
+  );
+
   /// INoteRepository
   if (!getIt.isRegistered<INoteRepository>()) {
     getIt.registerLazySingleton<INoteRepository>(
@@ -22,4 +28,7 @@ void setupDependencies({bool useFake = false}) {
       () => CategoryRepository(),
     );
   }
+
+  /// Ожидание инициализации
+  await getIt.isReady<SharedPreferences>();
 }

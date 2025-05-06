@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notnotes/domain/entities/categories/category_entity.dart';
+import 'package:notnotes/data/providers/local_data_providers.dart';
+import 'package:notnotes/domain/entities/category/category_entity.dart';
 import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 import 'package:notnotes/domain/services/notification_service.dart';
 import 'package:notnotes/router/app_routes.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class ListViewModel extends ChangeNotifier {
@@ -45,6 +45,8 @@ class ListViewModel extends ChangeNotifier {
 
   /// Getter для статуса
   bool get isLoading => _isLoading;
+
+  ValueNotifier<bool> isOpen = ValueNotifier(false);
 
   ListViewModel({
     required this.context,
@@ -94,18 +96,24 @@ class ListViewModel extends ChangeNotifier {
   }
 
   Future<void> _checkPermissionsOnStart() async {
-    final notifOK = await NotificationService.areNotificationsEnabled();
-    final alarmsOK = await NotificationService.areExactAlarmsPermitted();
-    if (!notifOK || !alarmsOK) {
-      _shouldShowPermissionsSheet = true;
+    final isNotificationsEnabled =
+        await NotificationService.areNotificationsEnabled();
+    final isExactAlarmsEnabled =
+        await NotificationService.areExactAlarmsPermitted();
+
+    if (!isNotificationsEnabled || !isExactAlarmsEnabled) {
+      _shouldShowPermissionsSheet =
+          !(await ConfigLocalDataProvider().getPermissionsRequested());
+
       notifyListeners();
     }
   }
 
   Future<void> markPermissionsRequested() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('permissions_requested', true);
+    await ConfigLocalDataProvider().setPermissionsRequested();
+
     _shouldShowPermissionsSheet = false;
+
     notifyListeners();
   }
 

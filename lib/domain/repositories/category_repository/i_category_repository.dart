@@ -1,4 +1,4 @@
-import 'package:notnotes/domain/entities/categories/category_entity.dart';
+import 'package:notnotes/domain/entities/category/category_entity.dart';
 
 abstract class ICategoryRepository {
   Future<void> init();
