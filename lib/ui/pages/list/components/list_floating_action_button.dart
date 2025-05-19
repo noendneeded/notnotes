@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +15,7 @@ class ListFloatingActionButtonWidget extends StatelessWidget {
       backgroundColor: Theme.of(context).primaryColor,
       foregroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-      onPressed: () => model.openNotePageWithCategory(),
+      onPressed: () => model.openNotePageWithCategory(NoteType.text),
 
       child: Icon(
         Icons.add_rounded,

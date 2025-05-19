@@ -25,6 +25,11 @@ class NoteViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
+  /// Работа со списком
+  int listItemsCount = 1;
+  List<ListItem> listItems = [];
+  List<TextEditingController> listItemControllers = [];
+
   NoteViewModel({
     required this.context,
     required NoteEntity? note,
@@ -37,10 +42,12 @@ class NoteViewModel extends ChangeNotifier {
       _note = NoteEntity(
         id: Uuid().v4(),
         title: '',
-        content: '',
+        contentText: '',
+        contentItems: [],
         categoryId: note!.categoryId,
         created: now,
         updated: now,
+        type: note.type,
       );
 
       needToUpdate = false;
@@ -54,7 +61,8 @@ class NoteViewModel extends ChangeNotifier {
       _note = NoteEntity(
         id: Uuid().v4(),
         title: '',
-        content: '',
+        contentText: '',
+        contentItems: [],
         created: now,
         updated: now,
         categoryId: 'all',
@@ -64,7 +72,7 @@ class NoteViewModel extends ChangeNotifier {
     }
 
     titleController.text = _note.title;
-    contentController.text = _note.content;
+    contentController.text = _note.contentText ?? '';
 
     _asyncInit(note);
   }
@@ -80,7 +88,46 @@ class NoteViewModel extends ChangeNotifier {
 
     changeCategory(id: note?.categoryId);
 
+    /// Инициализация работы со списком
+    for (var listItem in note!.contentItems!) {
+      listItems.add(listItem);
+      listItemControllers.add(TextEditingController(text: listItem.text));
+    }
+
+    if (note.type == NoteType.checklist) {
+      listItemsCount = listItems.length + 1;
+    }
+
     isLoading = false;
+    notifyListeners();
+  }
+
+  /// Создание нового пункта в списке
+  void createListItem() {
+    /// Добавление нового объекта списка
+    listItems.add(ListItem(text: '', checked: false));
+
+    /// Добавление нового контроллера
+    listItemControllers.add(TextEditingController());
+
+    /// Пересчет количества пунктов
+    listItemsCount = listItems.length + 1;
+
+    notifyListeners();
+  }
+
+  /// Удаление пункта в списке
+  void deleteListItem(int index) {
+    /// Удаление объекта списка
+    listItems.removeAt(index);
+
+    /// Очистка и удаление контроллера
+    listItemControllers[index].dispose();
+    listItemControllers.removeAt(index);
+
+    /// Пересчет количества пунктов
+    listItemsCount = listItems.length + 1;
+
     notifyListeners();
   }
 
@@ -91,9 +138,16 @@ class NoteViewModel extends ChangeNotifier {
       return;
     }
 
+    if (listItems.isNotEmpty) {
+      for (var index = 0; index < listItems.length; index++) {
+        listItems[index].text = listItemControllers[index].value.text;
+      }
+    }
+
     _note
       ..title = titleController.value.text
-      ..content = contentController.value.text
+      ..contentText = contentController.value.text
+      ..contentItems = listItems
       ..updated = needToUpdate ? DateTime.now() : _note.created;
 
     await noteRepository.createOrUpdateNote(_note);

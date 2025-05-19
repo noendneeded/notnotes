@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:notnotes/domain/repositories/category_repository/category_repository.dart';
 import 'package:notnotes/domain/repositories/category_repository/i_category_repository.dart';
-import 'package:notnotes/domain/repositories/note_repository/fake_note_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/i_note_repository.dart';
 import 'package:notnotes/domain/repositories/note_repository/note_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +17,7 @@ Future<void> setupDependencies({bool useFake = false}) async {
   /// INoteRepository
   if (!getIt.isRegistered<INoteRepository>()) {
     getIt.registerLazySingleton<INoteRepository>(
-      () => useFake ? FakeNoteRepository() : NoteRepository(),
+      () => NoteRepository(),
     );
   }
 

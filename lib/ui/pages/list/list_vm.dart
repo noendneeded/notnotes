@@ -74,6 +74,14 @@ class ListViewModel extends ChangeNotifier {
     });
   }
 
+  Future<void> _asyncInit() async {
+    _notes = [];
+    notesFiltered = [];
+    categories = [];
+
+    await refresh();
+  }
+
   Future<void> _onNotificationTap(String noteId) async {
     await refresh(categoryIndex: categorySelected);
 
@@ -109,25 +117,17 @@ class ListViewModel extends ChangeNotifier {
     }
   }
 
+  /// Запрос разрешений на уведомления и точные будильники
+  Future<void> requestPermissions() async {
+    await NotificationService.requestPermissions();
+  }
+
   Future<void> markPermissionsRequested() async {
     await ConfigLocalDataProvider().setPermissionsRequested();
 
     _shouldShowPermissionsSheet = false;
 
     notifyListeners();
-  }
-
-  /// Запрос разрешений на уведомления и точные будильники
-  Future<void> requestPermissions() async {
-    await NotificationService.requestPermissions();
-  }
-
-  Future<void> _asyncInit() async {
-    _notes = [];
-    notesFiltered = [];
-    categories = [];
-
-    await refresh();
   }
 
   /// Обновление списка заметок
@@ -182,9 +182,12 @@ class ListViewModel extends ChangeNotifier {
 
     if (query.isNotEmpty) {
       notesFiltered = notesFiltered
-          .where((note) =>
-              note.title.toLowerCase().contains(query) ||
-              note.content.toLowerCase().contains(query))
+          .where(
+            (note) =>
+                note.title.toLowerCase().contains(query) ||
+                (note.contentText != null &&
+                    note.contentText!.toLowerCase().contains(query)),
+          )
           .toList();
     }
 
@@ -236,7 +239,7 @@ class ListViewModel extends ChangeNotifier {
       final note = NoteEntity(
         id: notesFiltered[index].id,
         title: notesFiltered[index].title,
-        content: notesFiltered[index].content,
+        contentText: notesFiltered[index].contentText,
         categoryId: notesFiltered[index].categoryId,
         created: notesFiltered[index].created,
         updated: notesFiltered[index].updated,
@@ -379,9 +382,11 @@ class ListViewModel extends ChangeNotifier {
 
   /// Удаление выделенных заметок
   deleteNotes() async {
-    await Future.wait(noteStates.entries
-        .where((entry) => entry.value)
-        .map((entry) => noteRepository.deleteNote(_notes[entry.key].id)));
+    await Future.wait(
+      noteStates.entries.where((entry) => entry.value).map(
+            (entry) => noteRepository.deleteNote(notesFiltered[entry.key].id),
+          ),
+    );
 
     await refresh();
   }
@@ -411,16 +416,20 @@ class ListViewModel extends ChangeNotifier {
   }
 
   /// Переход на страницу 'Note' с передачей категории
-  openNotePageWithCategory() async {
+  openNotePageWithCategory(NoteType type) async {
     final result = await context.push(
       '${GoRouterState.of(context).fullPath!}/${AppRoutes.note}',
       extra: NoteEntity(
         id: 'new',
         title: '',
-        content: '',
+        contentText: '',
+        contentItems: [],
         categoryId: categories[categorySelected].id,
         created: DateTime.now(),
         updated: DateTime.now(),
+
+        /// Тип
+        type: type,
       ),
     );
 

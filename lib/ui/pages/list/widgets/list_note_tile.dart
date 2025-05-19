@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
+import 'package:notnotes/ui/pages/list/widgets/list_note_tile_checklist_content.dart';
+import 'package:notnotes/ui/pages/list/widgets/list_note_tile_text_content.dart';
 import 'package:notnotes/ui/widgets/default_box_shadow/default_box_shadow.dart';
 import 'package:provider/provider.dart';
 
@@ -107,18 +109,11 @@ class ListNoteTileWidget extends StatelessWidget {
                   tag: 'note_${note.id}_content',
                   child: Material(
                     type: MaterialType.transparency,
-                    child: Text(
-                      maxLines: 2,
-
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-
-                      ///
-                      note.content.isNotEmpty ? note.content : '...',
-                    ),
+                    child: note.type == NoteType.checklist
+                        ? ListNoteTileChecklistContentWidget()
+                        : ListNoteTileTextContentWidget(
+                            text: note.contentText,
+                          ),
                   ),
                 ),
               ],

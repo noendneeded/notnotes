@@ -160,11 +160,8 @@ class ListBodyWidget extends StatelessWidget {
                                         );
                                         break;
                                       case 'edit':
-                                        // ListCategoryDialog.editCategory(
-                                        //   id: model.categories[index].id,
-                                        //   context: context,
-                                        // );
                                         ListDialog.editCategory(
+                                          // ignore: use_build_context_synchronously
                                           context: context,
                                           id: model.categories[index].id,
                                         );
@@ -223,7 +220,8 @@ class ListBodyWidget extends StatelessWidget {
                         elevation: WidgetStatePropertyAll(4),
                       ),
 
-                      onPressed: () => model.openNotePageWithCategory(),
+                      onPressed: () => model.isOpen.value = true,
+                      //     model.openNotePageWithCategory(NoteType.text),
 
                       child: Text('Создать'),
                     ),

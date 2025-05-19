@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:notnotes/domain/entities/note/note_entity.dart';
 import 'package:notnotes/ui/pages/list/list_vm.dart';
 import 'package:notnotes/ui/pages/list/widgets/list_speed_dial_tile.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,21 @@ class ListSpeedDialWidget extends StatelessWidget {
             icon: Icons.text_fields_rounded,
             onTap: () {
               model.isOpen.value = false;
-              model.openNotePageWithCategory();
+              model.openNotePageWithCategory(NoteType.text);
+            },
+          ),
+        ),
+        SpeedDialChild(
+          ///
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+          labelWidget: ListSpeedDialTileWidget(
+            label: 'Список',
+            icon: Icons.check_box_rounded,
+            onTap: () {
+              model.isOpen.value = false;
+              model.openNotePageWithCategory(NoteType.checklist);
             },
           ),
         ),

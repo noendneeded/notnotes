@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:notnotes/ui/pages/note/note_vm.dart';
 import 'package:notnotes/ui/utils/default_toast/default_toast.dart';
 import 'package:notnotes/ui/widgets/default_container.dart/focusable_container.dart';
-import 'package:notnotes/ui/widgets/default_text_form/default_text_form.dart';
+import 'package:notnotes/ui/widgets/default_text_input/default_text_field.dart';
+import 'package:notnotes/ui/widgets/default_text_input/default_text_form.dart';
 import 'package:provider/provider.dart';
 
 class NoteBodyWidget extends StatelessWidget {
@@ -105,13 +106,64 @@ class NoteBodyWidget extends StatelessWidget {
                   child: FocusableContainerWidget(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 16),
-                      child: DefaultTextFormWidget(
-                        ///
-                        // initial: model.note.content,
-                        hint: 'Текст заметки',
+                        vertical: 4,
+                        horizontal: 16,
+                      ),
+                      // child: DefaultTextFormWidget(
+                      //   hint: 'Текст заметки',
+                      //   controller: model.contentController,
+                      // ),
+                      child: Column(
+                        children: List.generate(
+                          //
+                          model.listItemsCount,
+                          (index) => index != model.listItemsCount - 1
+                              ? Row(
+                                  children: [
+                                    ///
+                                    InkWell(
+                                      onTap: () {},
+                                      child: Icon(
+                                        Icons.check_box_outline_blank_rounded,
+                                      ),
+                                    ),
 
-                        controller: model.contentController,
+                                    const Gap(8),
+
+                                    Expanded(
+                                      child: DefaultTextFieldWidget(
+                                        controller:
+                                            model.listItemControllers[index],
+                                      ),
+                                    ),
+
+                                    const Gap(8),
+
+                                    InkWell(
+                                      onTap: () => model.deleteListItem(index),
+                                      child: Icon(Icons.close_rounded),
+                                    ),
+                                  ],
+                                )
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                    top: model.listItemsCount != 1 ? 4 : 12,
+                                    bottom: 12,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () => model.createListItem(),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.add_rounded,
+                                        ),
+                                        const Gap(10),
+                                        Text('Новый пункт'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                        ),
                       ),
                     ),
                   ),
