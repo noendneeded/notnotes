@@ -131,6 +131,15 @@ class NoteViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Отметка пункта в списке
+  void checkListItem(int index) {
+    if (_note.contentItems != null) {
+      _note.contentItems![index].checked = !_note.contentItems![index].checked;
+    }
+
+    notifyListeners();
+  }
+
   /// Создание/обновление заметки
   void createOrUpdateNote() async {
     if (titleController.value.text.isEmpty) {

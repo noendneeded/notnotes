@@ -110,7 +110,10 @@ class ListNoteTileWidget extends StatelessWidget {
                   child: Material(
                     type: MaterialType.transparency,
                     child: note.type == NoteType.checklist
-                        ? ListNoteTileChecklistContentWidget()
+                        ? ListNoteTileChecklistContentWidget(
+                            listItems:
+                                model.notesFiltered[index].contentItems ?? [],
+                          )
                         : ListNoteTileTextContentWidget(
                             text: note.contentText,
                           ),

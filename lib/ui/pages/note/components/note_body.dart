@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:notnotes/ui/pages/note/note_vm.dart';
@@ -121,10 +122,33 @@ class NoteBodyWidget extends StatelessWidget {
                               ? Row(
                                   children: [
                                     ///
-                                    InkWell(
-                                      onTap: () {},
-                                      child: Icon(
-                                        Icons.check_box_outline_blank_rounded,
+                                    // InkWell(
+                                    //   onTap: () => model.checkListItem(index),
+                                    //   child: Icon(
+                                    //     model.note.contentItems![index].checked
+                                    //         ? Icons.check_box_rounded
+                                    //         : Icons
+                                    //             .check_box_outline_blank_rounded,
+                                    //   ),
+                                    // ),
+
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 24, maxHeight: 24),
+                                      child: IconButton(
+                                        ///
+                                        padding: const EdgeInsets.all(0),
+
+                                        onPressed: () =>
+                                            model.checkListItem(index),
+
+                                        isSelected: model
+                                            .note.contentItems![index].checked,
+
+                                        icon: Icon(Icons
+                                            .check_box_outline_blank_rounded),
+                                        selectedIcon:
+                                            Icon(Icons.check_box_rounded),
                                       ),
                                     ),
 
